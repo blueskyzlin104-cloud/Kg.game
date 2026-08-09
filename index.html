@@ -13,8 +13,12 @@
             font-family: 'Pyidaungsu', sans-serif;
             margin: 0;
             padding: 0;
-            /* Cartoon & Rainbow World Theme */
-            background: linear-gradient(180deg, #70a1ff 0%, #eccc68 50%, #7bed9f 100%);
+            /* Phway Phway Photo as Background with Overlay */
+            background: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), 
+                        url('https://raw.githubusercontent.com/blueskyzlin104-cloud/Kg.game/main/phway.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -37,7 +41,6 @@
             font-size: 22px;
             color: #ff4757;
             margin: 0 0 6px 0;
-            text-shadow: 1px 1px 2px #fff;
         }
 
         .level-badge {
@@ -48,7 +51,6 @@
             font-size: 15px;
             font-weight: bold;
             display: inline-block;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
         }
 
         .mode-group {
@@ -66,55 +68,67 @@
             font-weight: bold;
             color: white;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .bg-myanmar { background: #ff4757; }
         .bg-english { background: #2ed573; color: #2f3542; }
         .bg-numbers { background: #1e90ff; }
 
-        .travel-path {
-            font-size: 36px;
-            margin: 15px 0;
-            background: rgba(255, 255, 255, 0.5);
-            padding: 8px 22px;
-            border-radius: 30px;
-            backdrop-filter: blur(5px);
-            animation: float 2.5s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-
         .card-container {
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Animated Phway Phway Avatar/Sticker */
+        .phway-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 5px solid #ff4757;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+            transition: all 0.5s ease;
+            background: url('https://raw.githubusercontent.com/blueskyzlin104-cloud/Kg.game/main/phway.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Animations */
+        .dance {
+            animation: happyDance 0.6s infinite alternate;
+            border-color: #2ed573;
+        }
+
+        @keyframes happyDance {
+            0% { transform: translateY(0) rotate(-15deg) scale(1.1); }
+            100% { transform: translateY(-20px) rotate(15deg) scale(1.2); }
+        }
+
+        .cry {
+            animation: sadCry 0.4s infinite alternate;
+            border-color: #ff4757;
+            filter: grayscale(40%);
+        }
+
+        @keyframes sadCry {
+            0% { transform: translateX(-8px) scale(0.95); }
+            100% { transform: translateX(8px) scale(0.95); }
         }
 
         .card-box {
-            width: 210px;
-            height: 210px;
-            background: #ffffff;
-            border: 10px solid #ffa502;
-            border-radius: 40px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 8px solid #ffa502;
+            border-radius: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 105px;
+            font-size: 100px;
             font-weight: bold;
             color: #ff4757;
-            box-shadow: 0 15px 25px rgba(0,0,0,0.25);
-            transition: all 0.2s ease;
-        }
-
-        .card-box.rolling {
-            animation: rollCard 0.1s infinite;
-        }
-
-        @keyframes rollCard {
-            0% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.08) rotate(5deg); }
-            100% { transform: scale(1) rotate(-5deg); }
+            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
         }
 
         .controls {
@@ -130,17 +144,12 @@
             background: linear-gradient(180deg, #eccc68 0%, #ffa502 100%);
             border: 4px solid #fff;
             color: #d63031;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: bold;
-            padding: 14px 45px;
+            padding: 12px 40px;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 8px 0 #e1b12c, 0 12px 20px rgba(0,0,0,0.3);
-        }
-
-        .draw-btn:active {
-            transform: translateY(6px);
-            box-shadow: 0 2px 0 #e1b12c;
+            box-shadow: 0 6px 0 #e1b12c, 0 10px 15px rgba(0,0,0,0.2);
         }
 
         .eval-group {
@@ -156,33 +165,30 @@
             color: white;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
         }
         .btn-yes { background: #2ed573; color: #2f3542; }
         .btn-no { background: #ff4757; }
 
         .speech-bubble {
             position: absolute;
-            top: -45px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: -40px;
             background: #fff;
             color: #2f3542;
             padding: 6px 15px;
             border-radius: 15px;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 16px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            white-space: nowrap;
             display: none;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
 
     <div class="top-nav">
-        <h1 class="title">🚂 ဖွေးဖွေးလေးရဲ့ စာသင်ခရီးစဉ် 🦄</h1>
-        <div class="level-badge" id="levelText">Level: 1 (အစပျိုး ခရီးစဉ်)</div>
+        <h1 class="title">🦄 ဖွေးဖွေးလေးရဲ့ စာသင်ခရီးစဉ် 🎈</h1>
+        <div class="level-badge" id="levelText">Level: 1 (မြန်မာ)</div>
         
         <div class="mode-group">
             <button class="btn-m bg-myanmar" onclick="setMode('myanmar')">🇲🇲 မြန်မာ</button>
@@ -191,10 +197,9 @@
         </div>
     </div>
 
-    <div class="travel-path" id="mapVisual">🏰 ➔ 🐯 ➔ 🐥 ➔ 🎈</div>
-
     <div class="card-container">
         <div class="speech-bubble" id="speechBubble"></div>
+        <div class="phway-avatar" id="avatar"></div>
         <div class="card-box" id="card">?</div>
     </div>
 
@@ -203,7 +208,7 @@
 
         <div class="eval-group">
             <button class="btn-eval btn-yes" onclick="assess(true)">🎉 မှန်တယ်</button>
-            <button class="btn-eval btn-no" onclick="assess(false)">💪 ကြိုးစားပါ</button>
+            <button class="btn-eval btn-no" onclick="assess(false)">😭 မှားတယ်</button>
         </div>
     </div>
 
@@ -211,135 +216,87 @@
         const levelsData = {
             myanmar: {
                 1: ["က","ခ","ဂ","ဃ","င"],
-                2: ["စ","ဆ","ဇ","ဈ","ည","ဋ","ဌ","ဍ","ဎ","ဏ"],
-                3: ["တ","ထ","ဒ","ဓ","န","ပ","ဖ","ဗ","ဘ","မ","ယ","ရ","လ","ဝ","သ","ဟ","ဠ","အ"]
+                2: ["စ","ဆ","ဇ","ဈ","ည"],
+                3: ["တ","ထ","ဒ","ဓ","န","ပ","ဖ","ဗ","ဘ","မ"]
             },
             english: {
-                1: ["A","B","C","D","E","F","G"],
-                2: ["H","I","J","K","L","M","N","O","P"],
-                3: ["Q","R","S","T","U","V","W","X","Y","Z"]
+                1: ["A","B","C","D","E"],
+                2: ["F","G","H","I","J"],
+                3: ["K","L","M","N","O"]
             },
             numbers: {
-                1: ["၁","၂","၃","၄","၅","1","2","3","4","5"],
-                2: ["၆","၇","၈","၉","၁၀","6","7","8","9","10"],
-                3: ["၁၁","၁၂","၁၃","၁၄","၁၅","11","12","13","14","15"]
+                1: ["၁","၂","၃","၄","၅"],
+                2: ["၆","၇","၈","၉","၁၀"],
+                3: ["1","2","3","4","5"]
             }
         };
 
-        const maps = [
-            "🏰 ➔ 🐯 ➔ 🐥 ➔ 🎈",
-            "🚀 ➔ 🌙 ➔ ⭐ ➔ 🪐",
-            "🎪 ➔ 🦁 ➔ 🐘 ➔ 🎡"
-        ];
-
         let mode = 'myanmar';
         let level = 1;
-        let score = 0;
 
         const card = document.getElementById('card');
         const levelText = document.getElementById('levelText');
-        const mapVisual = document.getElementById('mapVisual');
         const speech = document.getElementById('speechBubble');
+        const avatar = document.getElementById('avatar');
 
-        // Text-to-Speech (မြန်မာ/အင်္ဂလိပ် အသံစနစ်)
-        function speak(text) {
+        // မြန်မာမလေး အသံထွက်စနစ်
+        function speakMyanmar(text) {
             window.speechSynthesis.cancel();
-            const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = 'my-MM';
-            msg.rate = 0.85;
-            msg.pitch = 1.2;
-            window.speechSynthesis.speak(msg);
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'my-MM';
+            utterance.rate = 0.85;
+            utterance.pitch = 1.3; // ကလေးအသံပုံစံ ရစေရန် pitch မြှင့်ထားသည်
+            
+            // မြန်မာ Voice ရှာဖွေစစ်ဆေးခြင်း
+            const voices = window.speechSynthesis.getVoices();
+            const myVoice = voices.find(v => v.lang.includes('my') || v.name.includes('Myanmar'));
+            if(myVoice) utterance.voice = myVoice;
+
+            window.speechSynthesis.speak(utterance);
         }
 
-        // Web Audio API for Music Tones
-        const AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function setMode(m) {
+            mode = m;
+            level = 1;
+            levelText.innerText = `Level: 1 (${m === 'myanmar' ? 'မြန်မာ' : m === 'english' ? 'English' : 'ဂဏန်း'})`;
+            card.innerText = '?';
+            resetAvatar();
+        }
 
-        function playSound(type) {
-            if (AudioCtx.state === 'suspended') AudioCtx.resume();
-            const now = AudioCtx.currentTime;
+        function drawCard() {
+            resetAvatar();
+            const pool = levelsData[mode][level];
+            const randomChar = pool[Math.floor(Math.random() * pool.length)];
+            card.innerText = randomChar;
+        }
 
-            if (type === 'spin') {
-                const osc = AudioCtx.createOscillator();
-                const gain = AudioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(AudioCtx.destination);
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
-                gain.gain.setValueAtTime(0.15, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
-                osc.start(now);
-                osc.stop(now + 0.08);
+        function assess(isCorrect) {
+            resetAvatar();
+            if (isCorrect) {
+                avatar.classList.add('dance');
+                showSpeech("💃 တော်လိုက်တာ ဖွေးဖွေးလေးက! 🎉");
+                speakMyanmar("တော်လိုက်တာ ဖွေးဖွေးလေးက");
+            } else {
+                avatar.classList.add('cry');
+                showSpeech("😭 ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ~");
+                speakMyanmar("ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ");
             }
+        }
+
+        function resetAvatar() {
+            avatar.classList.remove('dance', 'cry');
+            speech.style.display = 'none';
         }
 
         function showSpeech(text) {
             speech.innerText = text;
             speech.style.display = 'block';
-            setTimeout(() => { speech.style.display = 'none'; }, 2500);
         }
 
-        function setMode(newMode) {
-            mode = newMode;
-            level = 1;
-            score = 0;
-            updateUI();
-            card.innerText = '?';
-            playSound('spin');
-        }
-
-        function getPool() {
-            let pool = [];
-            for (let i = 1; i <= level; i++) {
-                pool = pool.concat(levelsData[mode][i]);
-            }
-            return pool;
-        }
-
-        function drawCard() {
-            card.classList.add('rolling');
-            const pool = getPool();
-            let count = 0;
-
-            const interval = setInterval(() => {
-                card.innerText = pool[Math.floor(Math.random() * pool.length)];
-                playSound('spin');
-                count++;
-
-                if (count > 12) {
-                    clearInterval(interval);
-                    card.classList.remove('rolling');
-                    const selected = pool[Math.floor(Math.random() * pool.length)];
-                    card.innerText = selected;
-                }
-            }, 70);
-        }
-
-        function assess(isCorrect) {
-            if (isCorrect) {
-                const text = "တော်လိုက်တာ ဖွေးဖွေးလေးက";
-                showSpeech("✨ " + text + "! 🎉");
-                speak(text);
-                score++;
-
-                if (score >= 3 && level < 3) {
-                    level++;
-                    score = 0;
-                    setTimeout(() => {
-                        alert("🎉 ဂုဏ်ယူပါတယ်ဖွေးဖွေးလေးရေ! Level " + level + " သို့ ရောက်ပါပြီ!");
-                        updateUI();
-                    }, 500);
-                }
-            } else {
-                const text = "ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ";
-                showSpeech("💪 " + text + "!");
-                speak(text);
-            }
-        }
-
-        function updateUI() {
-            levelText.innerText = `Level: ${level} (${mode === 'myanmar' ? 'မြန်မာ' : mode === 'english' ? 'English' : 'ဂဏန်း'})`;
-            mapVisual.innerText = maps[(level - 1) % maps.length];
-        }
+        // Voice စနစ် အသင့်ဖြစ်အောင် တင်ယူခြင်း
+        window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+        };
     </script>
 </body>
 </html>
