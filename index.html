@@ -23,7 +23,7 @@
             background: linear-gradient(-45deg, #00c6ff, #0072ff, #38ef7d, #11998e);
             background-size: 400% 400%;
             animation: gradientBG 10s ease infinite;
-            padding: 10px 5px;
+            padding: 8px 5px;
         }
 
         @keyframes gradientBG {
@@ -46,32 +46,32 @@
 
         /* 🔝 Top Nav Bar */
         .top-nav {
-            width: 98%; max-width: 600px; padding: 8px 12px;
+            width: 98%; max-width: 600px; padding: 6px 12px;
             background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(12px);
             border-radius: 20px; border: 2px solid rgba(255,255,255,0.8);
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); z-index: 10;
         }
 
-        .title-text { font-size: 20px; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .title-text { font-size: 19px; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
 
         .status-box { display: flex; justify-content: space-around; width: 100%; align-items: center; }
         
         .badge {
-            background: #ffeaa7; padding: 4px 12px; border-radius: 20px;
-            font-size: 15px; color: #d35400; border: 2px solid #f39c12; font-weight: bold;
+            background: #ffeaa7; padding: 3px 10px; border-radius: 20px;
+            font-size: 14px; color: #d35400; border: 2px solid #f39c12; font-weight: bold;
             box-shadow: 0 3px 0 #e67e22;
         }
 
         .btn-restart {
             background: #ff7675; color: white; border: 2px solid #fff;
-            padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: bold;
+            padding: 3px 10px; border-radius: 20px; font-size: 13px; font-weight: bold;
             cursor: pointer; box-shadow: 0 3px 0 #d63031;
         }
 
         .mode-box { display: flex; gap: 8px; }
         .btn-m {
-            padding: 5px 12px; border-radius: 14px; font-size: 14px; font-weight: bold;
+            padding: 4px 10px; border-radius: 14px; font-size: 13px; font-weight: bold;
             color: white; border: 2px solid #fff; cursor: pointer; box-shadow: 0 3px 0 rgba(0,0,0,0.2);
         }
         .bg-mm { background: #ff4757; }
@@ -81,38 +81,36 @@
         /* 🎮 Main Display Area */
         .game-main {
             flex: 1; width: 100%; max-width: 500px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 10px; z-index: 5;
-            position: relative; margin: 10px 0;
+            align-items: center; justify-content: center; gap: 8px; z-index: 5;
+            position: relative; margin: 5px 0;
         }
 
         .speech-bubble {
-            position: absolute; top: -10px; background: #fff; color: #2d3436;
+            position: absolute; top: -12px; background: #fff; color: #2d3436;
             padding: 6px 16px; border-radius: 20px; font-size: 15px; font-weight: bold;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: none; z-index: 30; border: 2px solid #fdcb6e;
         }
 
-        /* 🎥 Borderless Display Frame (ခေါင်းမပြတ်စေရန် object-fit: contain သုံးထားသည်) */
+        /* 🎥 Character Frame (ဖွေးဖွေးပုံနှင့် Video အတွက် အဆင်ပြေအောင် ပြင်ဆင်ထားသည်) */
         .character-box {
-            width: 88vw; height: 38vh; max-width: 380px; max-height: 280px;
+            width: 88vw; height: 35vh; max-width: 380px; max-height: 260px;
             border-radius: 25px; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        /* ⚠️ Contain သုံးထားသဖြင့် ဗီဒီယို/ပုံ တစ်ခုလုံး အပြည့်အစုံ ပေါ်မည်ဖြစ်သည် */
         .character-box img, .character-box video {
-            width: 100%; height: 100%; object-fit: contain; border-radius: 25px;
+            width: 100%; height: 100%; object-fit: cover; border-radius: 25px;
         }
 
         /* 🃏 Flash Card */
         .flash-card {
-            width: 88vw; height: 22vh; max-width: 380px; max-height: 180px;
+            width: 88vw; height: 20vh; max-width: 380px; max-height: 160px;
             background: linear-gradient(145deg, #ffffff, #fff3bf);
             border: 6px solid #f1c40f; border-radius: 30px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 85px; font-weight: bold; color: #e74c3c;
+            font-size: 80px; font-weight: bold; color: #e74c3c;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             cursor: pointer; position: relative; transition: transform 0.15s;
         }
@@ -128,26 +126,26 @@
         /* 🕹️ Controls */
         .bottom-controls {
             width: 100%; max-width: 450px;
-            display: flex; flex-direction: column; gap: 8px; align-items: center; z-index: 10;
+            display: flex; flex-direction: column; gap: 6px; align-items: center; z-index: 10;
         }
 
         .btn-draw {
             width: 92%; background: linear-gradient(180deg, #f1c40f 0%, #e67e22 100%);
-            color: #fff; font-size: 24px; font-weight: bold; padding: 12px;
+            color: #fff; font-size: 22px; font-weight: bold; padding: 10px;
             border-radius: 50px; border: 3px solid #fff; cursor: pointer;
             box-shadow: 0 5px 0 #d35400, 0 8px 15px rgba(0,0,0,0.2); transition: 0.1s;
         }
         .btn-draw:active { transform: translateY(3px); box-shadow: 0 2px 0 #d35400; }
 
         .btn-mic {
-            width: 92%; background: #e74c3c; color: white; font-size: 15px; font-weight: bold;
-            padding: 8px; border-radius: 30px; border: 2px solid white; cursor: pointer;
+            width: 92%; background: #e74c3c; color: white; font-size: 14px; font-weight: bold;
+            padding: 7px; border-radius: 30px; border: 2px solid white; cursor: pointer;
             box-shadow: 0 4px 0 #c0392b; transition: 0.1s;
         }
 
         .eval-group { display: flex; gap: 10px; width: 92%; }
         .btn-eval {
-            flex: 1; padding: 10px; font-size: 18px; font-weight: bold; color: white;
+            flex: 1; padding: 8px; font-size: 17px; font-weight: bold; color: white;
             border-radius: 20px; border: 2px solid white; cursor: pointer;
             box-shadow: 0 4px 0 rgba(0,0,0,0.2); transition: 0.1s;
         }
@@ -180,10 +178,9 @@
     <div class="game-main">
         <div class="speech-bubble" id="speechBubble"></div>
 
-        <!-- 🎥 Character & Video Box -->
+        <!-- 🎥 Character Display Area (ဖွေးဖွေး ပုံတန်းပေါ်မည်) -->
         <div class="character-box" id="mediaBox">
-            <!-- စစဖွင့်ချင်း ပုံမပေါ်တာမျိုးမဖြစ်အောင် အဆင်သင့်ရှိတဲ့ dance.mp4 ကို တန်းပွင့်ခိုင်းထားပါသည် -->
-            <video src="./dance.mp4" autoplay loop muted playsinline></video>
+            <img src="phway.jpg" alt="ဖွေးဖွေး">
         </div>
 
         <div class="flash-card" id="card" onclick="speakCurrentCard()">
@@ -242,12 +239,12 @@
                 stars += 1;
                 starCount.innerText = `⭐ ကြယ်: ${stars}`;
                 showSpeech("💃 ဟေး... မှန်သွားပြီ! 🎉");
-                mediaBox.innerHTML = `<video src="./dance.mp4" autoplay loop muted playsinline></video>`;
+                mediaBox.innerHTML = `<video src="dance.mp4" autoplay loop muted playsinline></video>`;
                 if (typeof confetti === 'function') confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
             } else {
                 showSpeech("😭 မှားသွားတယ်နော် ကြိုးစားပါ~");
                 wrongToggle = !wrongToggle;
-                const imgName = wrongToggle ? './worng1.jpg' : './worng2.jpg';
+                const imgName = wrongToggle ? 'worng1.jpg' : 'worng2.jpg';
                 mediaBox.innerHTML = `<img src="${imgName}" alt="Wrong Response">`;
             }
         }
@@ -287,7 +284,7 @@
             starCount.innerText = `⭐ ကြယ်: 0`; 
             card.innerHTML = `?<span class="sound-icon">🔊</span>`; 
             speech.style.display = 'none'; 
-            mediaBox.innerHTML = `<video src="./dance.mp4" autoplay loop muted playsinline></video>`;
+            mediaBox.innerHTML = `<img src="phway.jpg" alt="ဖွေးဖွေး">`;
         }
     </script>
 </body>
