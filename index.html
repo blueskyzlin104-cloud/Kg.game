@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🦄 ဖွေးဖွေးလေးရဲ့ စာသင်ခရီးစဉ် 🎈</title>
-    <!-- Canvas Confetti Library for Fireworks/Confetti -->
+    <!-- Canvas Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@700&display=swap');
@@ -56,7 +56,7 @@
             position: absolute; bottom: 0; width: 100%; height: 30vh; pointer-events: none;
         }
 
-        /* Top Navigation & Scoreboard */
+        /* Navigation & Scoreboard */
         .top-nav {
             width: 100%;
             background: rgba(255, 255, 255, 0.95);
@@ -92,7 +92,6 @@
         .bg-english { background: #2ed573; color: #2f3542; }
         .bg-numbers { background: #1e90ff; }
 
-        /* Main Game Layout */
         .game-area {
             display: flex;
             flex-direction: column;
@@ -101,32 +100,46 @@
             position: relative;
         }
 
-        /* 👧 Full Size Animated Character (ဘောင်မပါ) */
-        .phway-full-character {
-            width: 180px;
-            height: 220px;
-            position: relative;
-            margin-bottom: 5px;
+        /* 🖼️ ဖွေးဖွေးလေး ဓာတ်ပုံ သို့မဟုတ် ကာတွန်း ရုပ်ပုံ Box */
+        .phway-character {
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            border: 6px solid #ff4757;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+            margin-bottom: 10px;
+            background-color: #ffeaa7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s ease;
-            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
+            position: relative;
+            overflow: hidden;
         }
 
-        .phway-full-character svg { width: 100%; height: 100%; }
+        .phway-character img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-        /* Full Body Dance & Cry Animations */
+        /* Dance & Cry Animations */
         .dance {
             animation: fullDance 0.6s infinite alternate ease-in-out;
+            border-color: #2ed573 !important;
+            box-shadow: 0 0 30px #2ed573 !important;
         }
 
         @keyframes fullDance {
             0% { transform: translateY(0) rotate(-15deg) scale(1.1); }
-            50% { transform: translateY(-25px) rotate(0deg) scale(1.2); }
+            50% { transform: translateY(-20px) rotate(0deg) scale(1.2); }
             100% { transform: translateY(0) rotate(15deg) scale(1.1); }
         }
 
         .cry {
             animation: fullCry 0.3s infinite alternate ease-in-out;
-            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2)) grayscale(40%);
+            border-color: #ff4757 !important;
+            filter: grayscale(40%);
         }
 
         @keyframes fullCry {
@@ -169,16 +182,6 @@
             background: #ff4757; color: white; font-size: 16px; font-weight: bold;
             padding: 10px 20px; border-radius: 30px; border: 3px solid white;
             cursor: pointer; box-shadow: 0 5px 12px rgba(255, 71, 87, 0.4);
-        }
-
-        .skin-btn-group {
-            display: flex; gap: 8px; margin-top: 5px;
-        }
-
-        .btn-skin {
-            background: #70a1ff; color: white; border: 2px solid white;
-            padding: 5px 10px; border-radius: 15px; font-size: 12px;
-            font-weight: bold; cursor: pointer;
         }
 
         .eval-group { display: flex; gap: 12px; }
@@ -224,46 +227,12 @@
     <div class="game-area">
         <div class="speech-bubble" id="speechBubble"></div>
         
-        <!-- 👧 Full Size Vector Avatar (ဘောင်မဲ့) -->
-        <div class="phway-full-character" id="avatarBox">
-            <svg viewBox="0 0 100 130">
-                <!-- Hair Back -->
-                <path d="M15,40 C5,60 10,110 30,115 C35,100 25,60 25,45 Z" fill="#2d3436"/>
-                <path d="M85,40 C95,60 90,110 70,115 C65,100 75,60 75,45 Z" fill="#2d3436"/>
-                <!-- Body / Dress -->
-                <path d="M35,75 L65,75 L75,115 L25,115 Z" fill="#ff7675"/>
-                <!-- Arms -->
-                <path d="M25,78 C15,85 15,95 22,100" fill="none" stroke="#ffdfba" stroke-width="6" stroke-linecap="round"/>
-                <path d="M75,78 C85,85 85,95 78,100" fill="none" stroke="#ffdfba" stroke-width="6" stroke-linecap="round"/>
-                <!-- Legs -->
-                <rect x="38" y="115" width="8" height="12" fill="#ffdfba"/>
-                <rect x="54" y="115" width="8" height="12" fill="#ffdfba"/>
-                <!-- Face -->
-                <circle cx="50" cy="48" r="28" fill="#ffdfba"/>
-                <!-- Hair Top / Bangs -->
-                <path d="M22,42 C25,18 75,18 78,42 C70,28 30,28 22,42 Z" fill="#2d3436"/>
-                
-                <!-- 👑 Dynamic Hats / Skins -->
-                <g id="hatLayer">
-                    <!-- Default Bow Ribbon -->
-                    <path d="M40,20 C35,10 45,12 50,20 C55,12 65,10 60,20 Z" fill="#ff4757"/>
-                    <circle cx="50" cy="20" r="3" fill="#ffa502"/>
-                </g>
-
-                <!-- Eyes -->
-                <circle cx="38" cy="46" r="3.5" fill="#2d3436"/>
-                <circle cx="62" cy="46" r="3.5" fill="#2d3436"/>
-                <circle cx="39" cy="44.5" r="1" fill="#ffffff"/>
-                <circle cx="63" cy="44.5" r="1" fill="#ffffff"/>
-                <!-- Cheeks -->
-                <ellipse cx="33" cy="52" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
-                <ellipse cx="67" cy="52" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
-                <!-- Smile -->
-                <path d="M42,56 Q50,64 58,56" fill="none" stroke="#d63031" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
+        <!-- 🖼️ ဖွေးဖွေးလေး ဓာတ်ပုံ Box (ပုံမရှိရင် ကာတွန်းပုံ အလိုအလျောက် ပေါ်မည်) -->
+        <div class="phway-character" id="avatarBox">
+            <img id="phwayImg" src="phway.jpg" alt="ဖွေးဖွေးလေး" onerror="this.src='https://api.dicebear.com/7.x/adventurer/svg?seed=PhwayPhway&hair=long01,long02&hairColor=2c1b18';">
         </div>
 
-        <!-- Flash Card (နှိပ်ရင် အသံထွက်ပြမည်) -->
+        <!-- Flash Card -->
         <div class="card-box" id="card" onclick="speakCurrentCard()">
             ?
             <span class="sound-hint">🔊</span>
@@ -276,13 +245,6 @@
         <button class="mic-btn" id="micBtn" onclick="startListening()">
             🎙️ အသံဖတ်ပြမယ် (နားထောင်)
         </button>
-
-        <!-- Skin / Hat Switcher -->
-        <div class="skin-btn-group">
-            <button class="btn-skin" onclick="changeSkin('ribbon')">🎀 ဖဲကြိုး</button>
-            <button class="btn-skin" onclick="changeSkin('crown')">👑 သရဖူ</button>
-            <button class="btn-skin" onclick="changeSkin('witch')">🧙‍♀️ ဦးထုပ်</button>
-        </div>
 
         <div class="eval-group">
             <button class="btn-eval btn-yes" onclick="assess(true)">🎉 မှန်တယ်</button>
@@ -319,12 +281,9 @@
         const starCount = document.getElementById('starCount');
         const speech = document.getElementById('speechBubble');
         const avatarBox = document.getElementById('avatarBox');
-        const hatLayer = document.getElementById('hatLayer');
 
-        // 🔊 Card Sound Reader (စာလုံးအသံထွက်ပေးခြင်း)
         function speakCurrentCard() {
             if (!currentTarget || currentTarget === '?') return;
-            
             const utterance = new SpeechSynthesisUtterance(currentTarget);
             utterance.lang = mode === 'english' ? 'en-US' : 'my-MM';
             utterance.rate = 0.8;
@@ -392,25 +351,12 @@
                 starCount.innerText = `⭐ ကြယ်: ${stars}`;
                 avatarBox.classList.add('dance');
                 showSpeech("💃 တော်လိုက်တာ ဖွေးဖွေးလေးက! 🎉");
-                
-                // 🎉 Confetti Fireworks
                 if (typeof confetti === 'function') {
                     confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
                 }
             } else {
                 avatarBox.classList.add('cry');
                 showSpeech("😭 ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ~");
-            }
-        }
-
-        // 👗 Skin / Hat Switcher
-        function changeSkin(skinType) {
-            if (skinType === 'ribbon') {
-                hatLayer.innerHTML = `<path d="M40,20 C35,10 45,12 50,20 C55,12 65,10 60,20 Z" fill="#ff4757"/><circle cx="50" cy="20" r="3" fill="#ffa502"/>`;
-            } else if (skinType === 'crown') {
-                hatLayer.innerHTML = `<path d="M35,22 L40,10 L50,18 L60,10 L65,22 Z" fill="#ffd700" stroke="#ffa502" stroke-width="1.5"/>`;
-            } else if (skinType === 'witch') {
-                hatLayer.innerHTML = `<path d="M25,24 L75,24 L50,0 Z" fill="#6c5ce7"/><ellipse cx="50" cy="24" rx="28" ry="4" fill="#a29bfe"/>`;
             }
         }
 
@@ -424,7 +370,6 @@
             speech.style.display = 'block';
         }
 
-        // 🎙️ Speech Recognition
         function startListening() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
