@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🦄 ဖွေးဖွေးလေးရဲ့ စာသင်ခရီးစဉ် 🎈</title>
+    <!-- Canvas Confetti Library for Fireworks/Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@700&display=swap');
 
@@ -24,18 +26,13 @@
             background: linear-gradient(180deg, #74b9ff 0%, #81ecec 50%, #55efc4 100%);
         }
 
-        /* 🌳 သဘာဝရှုခင်း Background Animation */
+        /* 🌳 သဘာဝရှုခင်း Background */
         .bg-nature {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
         }
 
-        /* ☁️ တိမ်လှုပ်ရှားမှု */
         .cloud {
             position: absolute;
             background: rgba(255, 255, 255, 0.85);
@@ -43,272 +40,180 @@
             animation: moveClouds 25s linear infinite;
         }
         .cloud::before, .cloud::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 50%;
+            content: ''; position: absolute;
+            background: rgba(255, 255, 255, 0.85); border-radius: 50%;
         }
-        .cloud1 { width: 120px; height: 40px; top: 12%; left: -150px; }
+        .cloud1 { width: 120px; height: 40px; top: 10%; left: -150px; }
         .cloud1::before { width: 50px; height: 50px; top: -20px; left: 20px; }
         .cloud1::after { width: 40px; height: 40px; top: -15px; left: 55px; }
-
-        .cloud2 { width: 160px; height: 50px; top: 22%; left: -200px; animation-delay: 10s; animation-duration: 35s; }
-        .cloud2::before { width: 60px; height: 60px; top: -25px; left: 25px; }
-        .cloud2::after { width: 50px; height: 50px; top: -18px; left: 75px; }
 
         @keyframes moveClouds {
             0% { transform: translateX(0); }
             100% { transform: translateX(120vw); }
         }
 
-        /* ⛰️ တောင်တန်းများနှင့် သစ်ပင်များ */
         .hills-svg {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 35vh;
-            pointer-events: none;
+            position: absolute; bottom: 0; width: 100%; height: 30vh; pointer-events: none;
         }
 
+        /* Top Navigation & Scoreboard */
         .top-nav {
             width: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 12px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-bottom: 5px solid #ff4757;
+            border-bottom: 4px solid #ff4757;
             backdrop-filter: blur(5px);
+            z-index: 10;
         }
 
-        .title {
-            font-size: 20px;
-            color: #ff4757;
-            margin: 0 0 4px 0;
-        }
+        .title { font-size: 18px; color: #ff4757; margin: 0 0 4px 0; }
 
-        .level-badge {
-            background: #ffa502;
-            color: white;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            display: inline-block;
-        }
-
-        .mode-group {
+        .score-board {
             display: flex;
             justify-content: center;
-            gap: 6px;
-            margin-top: 8px;
+            gap: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #d63031;
+            margin-bottom: 6px;
         }
 
+        .star-badge { background: #ffeaa7; padding: 3px 12px; border-radius: 15px; border: 2px solid #ffa502; }
+
+        .mode-group { display: flex; justify-content: center; gap: 6px; }
+
         .btn-m {
-            padding: 6px 12px;
-            border: 2px solid white;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
+            padding: 5px 10px; border: 2px solid white; border-radius: 12px;
+            font-size: 12px; font-weight: bold; color: white; cursor: pointer;
         }
         .bg-myanmar { background: #ff4757; }
         .bg-english { background: #2ed573; color: #2f3542; }
         .bg-numbers { background: #1e90ff; }
 
-        .card-container {
-            position: relative;
+        /* Main Game Layout */
+        .game-area {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 10px 0;
-        }
-
-        /* 👧 ဖွေးဖွေးလေး Avatar Box */
-        .phway-avatar-box {
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
-            border: 6px solid #ff4757;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-            margin-bottom: 10px;
-            background-color: #ffeaa7;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
+            width: 100%;
             position: relative;
         }
 
-        .phway-avatar-box svg {
-            width: 100%;
-            height: 100%;
+        /* 👧 Full Size Animated Character (ဘောင်မပါ) */
+        .phway-full-character {
+            width: 180px;
+            height: 220px;
+            position: relative;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
         }
 
-        /* 💃 ကြီးကြီးမားမား ကပြသည့် Animation */
+        .phway-full-character svg { width: 100%; height: 100%; }
+
+        /* Full Body Dance & Cry Animations */
         .dance {
-            animation: grandDance 0.6s infinite alternate ease-in-out;
-            border-color: #2ed573 !important;
-            box-shadow: 0 0 35px #2ed573 !important;
+            animation: fullDance 0.6s infinite alternate ease-in-out;
         }
 
-        @keyframes grandDance {
-            0% { transform: translateY(0) rotate(-20deg) scale(1.15); }
-            50% { transform: translateY(-30px) rotate(0deg) scale(1.3); }
-            100% { transform: translateY(0) rotate(20deg) scale(1.15); }
+        @keyframes fullDance {
+            0% { transform: translateY(0) rotate(-15deg) scale(1.1); }
+            50% { transform: translateY(-25px) rotate(0deg) scale(1.2); }
+            100% { transform: translateY(0) rotate(15deg) scale(1.1); }
         }
 
-        /* 😭 ကြီးကြီးမားမား ငိုပြသည့် Animation */
         .cry {
-            animation: grandCry 0.4s infinite alternate ease-in-out;
-            border-color: #ff4757 !important;
-            filter: grayscale(30%);
+            animation: fullCry 0.3s infinite alternate ease-in-out;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2)) grayscale(40%);
         }
 
-        @keyframes grandCry {
-            0% { transform: translateX(-15px) translateY(5px) scale(0.9); }
-            100% { transform: translateX(15px) translateY(-5px) scale(0.9); }
+        @keyframes fullCry {
+            0% { transform: translateX(-12px) scale(0.95); }
+            100% { transform: translateX(12px) scale(0.95); }
         }
 
-        /* မျက်ရည်စီးကျသည့် Animation */
-        .tears {
-            display: none;
-            position: absolute;
-            top: 55%;
-            width: 100%;
-            justify-content: space-around;
-            padding: 0 40px;
-        }
-
-        .cry .tears {
-            display: flex;
-        }
-
-        .tear-drop {
-            width: 8px;
-            height: 16px;
-            background: #00cec9;
-            border-radius: 50%;
-            animation: tearFall 0.5s infinite linear;
-        }
-
-        @keyframes tearFall {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(30px); opacity: 0; }
-        }
-
+        /* Flash Card */
         .card-box {
-            width: 170px;
-            height: 170px;
+            width: 160px; height: 160px;
             background: rgba(255, 255, 255, 0.95);
             border: 8px solid #ffa502;
-            border-radius: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 85px;
-            font-weight: bold;
-            color: #ff4757;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+            border-radius: 30px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 80px; font-weight: bold; color: #ff4757;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            position: relative;
         }
 
+        .sound-hint {
+            position: absolute; bottom: 5px; right: 10px; font-size: 14px; color: #70a1ff;
+        }
+
+        /* Controls & Buttons */
         .controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            width: 100%;
-            z-index: 5;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 10px; margin-bottom: 15px; width: 100%; z-index: 5;
         }
 
         .draw-btn {
             background: linear-gradient(180deg, #eccc68 0%, #ffa502 100%);
-            border: 4px solid #fff;
-            color: #d63031;
-            font-size: 22px;
-            font-weight: bold;
-            padding: 10px 35px;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 6px 0 #e1b12c, 0 8px 15px rgba(0,0,0,0.2);
+            border: 3px solid #fff; color: #d63031;
+            font-size: 20px; font-weight: bold; padding: 10px 30px;
+            border-radius: 50px; cursor: pointer;
+            box-shadow: 0 5px 0 #e1b12c, 0 8px 15px rgba(0,0,0,0.2);
         }
 
         .mic-btn {
-            background: #ff4757;
-            color: white;
-            font-size: 17px;
-            font-weight: bold;
-            padding: 10px 22px;
-            border-radius: 30px;
-            border: 3px solid white;
-            cursor: pointer;
-            box-shadow: 0 5px 12px rgba(255, 71, 87, 0.4);
+            background: #ff4757; color: white; font-size: 16px; font-weight: bold;
+            padding: 10px 20px; border-radius: 30px; border: 3px solid white;
+            cursor: pointer; box-shadow: 0 5px 12px rgba(255, 71, 87, 0.4);
         }
 
-        .listening {
-            background: #2ed573 !important;
-            animation: pulse 0.8s infinite;
+        .skin-btn-group {
+            display: flex; gap: 8px; margin-top: 5px;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-            100% { transform: scale(1); }
+        .btn-skin {
+            background: #70a1ff; color: white; border: 2px solid white;
+            padding: 5px 10px; border-radius: 15px; font-size: 12px;
+            font-weight: bold; cursor: pointer;
         }
 
-        .eval-group {
-            display: flex;
-            gap: 12px;
-        }
+        .eval-group { display: flex; gap: 12px; }
 
         .btn-eval {
-            padding: 10px 18px;
-            font-size: 15px;
-            border: 3px solid white;
-            border-radius: 30px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
+            padding: 8px 16px; font-size: 15px; border: 3px solid white;
+            border-radius: 30px; color: white; font-weight: bold; cursor: pointer;
         }
         .btn-yes { background: #2ed573; color: #2f3542; }
         .btn-no { background: #ff4757; }
 
         .speech-bubble {
-            position: absolute;
-            top: -45px;
-            background: #fff;
-            color: #2f3542;
-            padding: 6px 16px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            display: none;
-            z-index: 10;
+            position: absolute; top: -35px; background: #fff; color: #2f3542;
+            padding: 6px 14px; border-radius: 15px; font-weight: bold;
+            font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: none; z-index: 10;
         }
     </style>
 </head>
 <body>
 
-    <!-- 🌳 သဘာဝရှုခင်း Background -->
     <div class="bg-nature">
         <div class="cloud cloud1"></div>
-        <div class="cloud cloud2"></div>
-        
         <svg class="hills-svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
-            <!-- တောင်တန်းကြီးများ -->
             <path fill="#55efc4" opacity="0.7" d="M0,192L60,181.3C120,171,240,149,360,165.3C480,181,600,235,720,229.3C840,224,960,160,1080,138.7C1200,117,1320,139,1380,149.3L1440,160L1440,320L0,320Z"></path>
             <path fill="#00b894" opacity="0.9" d="M0,224L80,208C160,192,320,160,480,176C640,192,800,256,960,256C1120,256,1280,192,1360,160L1440,128L1440,320L0,320Z"></path>
-            <!-- မြက်ခင်းနှင့် ရေကန် -->
-            <path fill="#00cec9" d="M300,280 Q500,230 700,280 Q900,330 1100,280 L1440,320 L0,320 Z"></path>
         </svg>
     </div>
 
     <div class="top-nav">
         <h1 class="title">🦄 ဖွေးဖွေးလေးရဲ့ စာသင်ခရီးစဉ် 🎈</h1>
-        <div class="level-badge" id="levelText">Level: 1 (မြန်မာ)</div>
-        
+        <div class="score-board">
+            <span class="star-badge" id="starCount">⭐ ကြယ်: 0</span>
+            <span id="levelText">Level: 1</span>
+        </div>
         <div class="mode-group">
             <button class="btn-m bg-myanmar" onclick="setMode('myanmar')">🇲🇲 မြန်မာ</button>
             <button class="btn-m bg-english" onclick="setMode('english')">🔤 ABC</button>
@@ -316,32 +221,53 @@
         </div>
     </div>
 
-    <div class="card-container">
+    <div class="game-area">
         <div class="speech-bubble" id="speechBubble"></div>
         
-        <div class="phway-avatar-box" id="avatarBox">
-            <div class="tears">
-                <div class="tear-drop"></div>
-                <div class="tear-drop"></div>
-            </div>
-            <svg viewBox="0 0 100 100">
-                <path d="M20,35 C10,50 15,80 30,85 C35,80 30,50 30,40 Z" fill="#2d3436"/>
-                <path d="M80,35 C90,50 85,80 70,85 C65,80 70,50 70,40 Z" fill="#2d3436"/>
-                <circle cx="50" cy="50" r="30" fill="#ffdfba"/>
-                <path d="M20,45 C25,20 75,20 80,45 C70,30 30,30 20,45 Z" fill="#2d3436"/>
-                <path d="M40,22 C35,12 45,15 50,22 C55,15 65,12 60,22 Z" fill="#ff4757"/>
-                <circle cx="50" cy="22" r="3" fill="#ffa502"/>
-                <circle cx="38" cy="48" r="4" fill="#2d3436"/>
-                <circle cx="62" cy="48" r="4" fill="#2d3436"/>
-                <circle cx="39" cy="46" r="1.5" fill="#ffffff"/>
-                <circle cx="63" cy="46" r="1.5" fill="#ffffff"/>
-                <ellipse cx="33" cy="54" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
-                <ellipse cx="67" cy="54" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
-                <path d="M42,58 Q50,66 58,58" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round"/>
+        <!-- 👧 Full Size Vector Avatar (ဘောင်မဲ့) -->
+        <div class="phway-full-character" id="avatarBox">
+            <svg viewBox="0 0 100 130">
+                <!-- Hair Back -->
+                <path d="M15,40 C5,60 10,110 30,115 C35,100 25,60 25,45 Z" fill="#2d3436"/>
+                <path d="M85,40 C95,60 90,110 70,115 C65,100 75,60 75,45 Z" fill="#2d3436"/>
+                <!-- Body / Dress -->
+                <path d="M35,75 L65,75 L75,115 L25,115 Z" fill="#ff7675"/>
+                <!-- Arms -->
+                <path d="M25,78 C15,85 15,95 22,100" fill="none" stroke="#ffdfba" stroke-width="6" stroke-linecap="round"/>
+                <path d="M75,78 C85,85 85,95 78,100" fill="none" stroke="#ffdfba" stroke-width="6" stroke-linecap="round"/>
+                <!-- Legs -->
+                <rect x="38" y="115" width="8" height="12" fill="#ffdfba"/>
+                <rect x="54" y="115" width="8" height="12" fill="#ffdfba"/>
+                <!-- Face -->
+                <circle cx="50" cy="48" r="28" fill="#ffdfba"/>
+                <!-- Hair Top / Bangs -->
+                <path d="M22,42 C25,18 75,18 78,42 C70,28 30,28 22,42 Z" fill="#2d3436"/>
+                
+                <!-- 👑 Dynamic Hats / Skins -->
+                <g id="hatLayer">
+                    <!-- Default Bow Ribbon -->
+                    <path d="M40,20 C35,10 45,12 50,20 C55,12 65,10 60,20 Z" fill="#ff4757"/>
+                    <circle cx="50" cy="20" r="3" fill="#ffa502"/>
+                </g>
+
+                <!-- Eyes -->
+                <circle cx="38" cy="46" r="3.5" fill="#2d3436"/>
+                <circle cx="62" cy="46" r="3.5" fill="#2d3436"/>
+                <circle cx="39" cy="44.5" r="1" fill="#ffffff"/>
+                <circle cx="63" cy="44.5" r="1" fill="#ffffff"/>
+                <!-- Cheeks -->
+                <ellipse cx="33" cy="52" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
+                <ellipse cx="67" cy="52" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
+                <!-- Smile -->
+                <path d="M42,56 Q50,64 58,56" fill="none" stroke="#d63031" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
         </div>
 
-        <div class="card-box" id="card">?</div>
+        <!-- Flash Card (နှိပ်ရင် အသံထွက်ပြမည်) -->
+        <div class="card-box" id="card" onclick="speakCurrentCard()">
+            ?
+            <span class="sound-hint">🔊</span>
+        </div>
     </div>
 
     <div class="controls">
@@ -350,6 +276,13 @@
         <button class="mic-btn" id="micBtn" onclick="startListening()">
             🎙️ အသံဖတ်ပြမယ် (နားထောင်)
         </button>
+
+        <!-- Skin / Hat Switcher -->
+        <div class="skin-btn-group">
+            <button class="btn-skin" onclick="changeSkin('ribbon')">🎀 ဖဲကြိုး</button>
+            <button class="btn-skin" onclick="changeSkin('crown')">👑 သရဖူ</button>
+            <button class="btn-skin" onclick="changeSkin('witch')">🧙‍♀️ ဦးထုပ်</button>
+        </div>
 
         <div class="eval-group">
             <button class="btn-eval btn-yes" onclick="assess(true)">🎉 မှန်တယ်</button>
@@ -378,13 +311,25 @@
 
         let mode = 'myanmar';
         let level = 1;
+        let stars = 0;
         let currentTarget = '';
 
         const card = document.getElementById('card');
         const levelText = document.getElementById('levelText');
+        const starCount = document.getElementById('starCount');
         const speech = document.getElementById('speechBubble');
         const avatarBox = document.getElementById('avatarBox');
-        const micBtn = document.getElementById('micBtn');
+        const hatLayer = document.getElementById('hatLayer');
+
+        // 🔊 Card Sound Reader (စာလုံးအသံထွက်ပေးခြင်း)
+        function speakCurrentCard() {
+            if (!currentTarget || currentTarget === '?') return;
+            
+            const utterance = new SpeechSynthesisUtterance(currentTarget);
+            utterance.lang = mode === 'english' ? 'en-US' : 'my-MM';
+            utterance.rate = 0.8;
+            window.speechSynthesis.speak(utterance);
+        }
 
         function playChime(isSuccess) {
             try {
@@ -425,7 +370,7 @@
         function setMode(m) {
             mode = m;
             level = 1;
-            levelText.innerText = `Level: 1 (${m === 'myanmar' ? 'မြန်မာ' : m === 'english' ? 'English' : 'ဂဏန်း'})`;
+            levelText.innerText = `Level: 1`;
             card.innerText = '?';
             currentTarget = '';
             resetAvatar();
@@ -435,18 +380,37 @@
             resetAvatar();
             const pool = levelsData[mode][level];
             currentTarget = pool[Math.floor(Math.random() * pool.length)];
-            card.innerText = currentTarget;
+            card.innerHTML = `${currentTarget}<span class="sound-hint">🔊</span>`;
+            speakCurrentCard();
         }
 
         function assess(isCorrect) {
             resetAvatar();
             playChime(isCorrect);
             if (isCorrect) {
+                stars += 1;
+                starCount.innerText = `⭐ ကြယ်: ${stars}`;
                 avatarBox.classList.add('dance');
                 showSpeech("💃 တော်လိုက်တာ ဖွေးဖွေးလေးက! 🎉");
+                
+                // 🎉 Confetti Fireworks
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                }
             } else {
                 avatarBox.classList.add('cry');
                 showSpeech("😭 ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ~");
+            }
+        }
+
+        // 👗 Skin / Hat Switcher
+        function changeSkin(skinType) {
+            if (skinType === 'ribbon') {
+                hatLayer.innerHTML = `<path d="M40,20 C35,10 45,12 50,20 C55,12 65,10 60,20 Z" fill="#ff4757"/><circle cx="50" cy="20" r="3" fill="#ffa502"/>`;
+            } else if (skinType === 'crown') {
+                hatLayer.innerHTML = `<path d="M35,22 L40,10 L50,18 L60,10 L65,22 Z" fill="#ffd700" stroke="#ffa502" stroke-width="1.5"/>`;
+            } else if (skinType === 'witch') {
+                hatLayer.innerHTML = `<path d="M25,24 L75,24 L50,0 Z" fill="#6c5ce7"/><ellipse cx="50" cy="24" rx="28" ry="4" fill="#a29bfe"/>`;
             }
         }
 
@@ -460,29 +424,24 @@
             speech.style.display = 'block';
         }
 
-        // 🎙️ Speech Recognition (အသံနားထောင်စနစ် မွမ်းမံထားမှု)
+        // 🎙️ Speech Recognition
         function startListening() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
             if (!SpeechRecognition) {
-                alert("သင့် ဖုန်း Browser ရဲ့ Microphone ခွင့်ပြုချက် (Allow) ပေးထားရန် လိုအပ်ပါသည် သို့မဟုတ် Chrome ကို သုံးပေးပါဗျာ!");
+                alert("သင့် ဖုန်းတွင် Microphone ကို ခွင့်ပြုပေးပါဗျာ!");
                 return;
             }
 
             const recognition = new SpeechRecognition();
             recognition.lang = mode === 'english' ? 'en-US' : 'my-MM';
-            recognition.continuous = false;
-            recognition.interimResults = false;
 
-            micBtn.classList.add('listening');
+            const micBtn = document.getElementById('micBtn');
             micBtn.innerText = "🎧 နားထောင်နေပါတယ်...";
 
             recognition.start();
 
             recognition.onresult = function(event) {
-                micBtn.classList.remove('listening');
                 micBtn.innerText = "🎙️ အသံဖတ်ပြမယ် (နားထောင်)";
-                
                 const spokenText = event.results[0][0].transcript.trim();
 
                 if (!currentTarget || currentTarget === '?') {
@@ -497,15 +456,9 @@
                 }
             };
 
-            recognition.onerror = function(event) {
-                micBtn.classList.remove('listening');
+            recognition.onerror = function() {
                 micBtn.innerText = "🎙️ အသံဖတ်ပြမယ် (နားထောင်)";
-                showSpeech("အသံ မကြားရပါဘူး သို့မဟုတ် Mic ပိတ်ထားပါတယ် 😅");
-            };
-
-            recognition.onend = function() {
-                micBtn.classList.remove('listening');
-                micBtn.innerText = "🎙️ အသံဖတ်ပြမယ် (နားထောင်)";
+                showSpeech("အသံ မကြားရပါဘူးနော် 😅");
             };
         }
     </script>
