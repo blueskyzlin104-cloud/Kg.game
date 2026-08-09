@@ -22,7 +22,7 @@
             background: linear-gradient(180deg, #38ef7d 0%, #11998e 100%);
         }
 
-        /* 🌳 Sky Background Animation */
+        /* 🌳 Sky Background */
         .sky-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 60%;
             background: linear-gradient(180deg, #00c6ff 0%, #0072ff 100%);
@@ -60,7 +60,6 @@
             padding: 4px 14px; border-radius: 20px; font-size: 15px; font-weight: bold;
             cursor: pointer; box-shadow: 0 4px 0 #d63031;
         }
-        .btn-restart:active { transform: translateY(3px); box-shadow: none; }
 
         .mode-box { display: flex; gap: 8px; }
         .btn-m {
@@ -83,7 +82,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: none; z-index: 30;
         }
 
-        /* 🎥 Character Container (SVG, Image, Video) */
+        /* 🎥 Character Container */
         .character-box {
             width: 180px; height: 180px; margin-bottom: 10px;
             border-radius: 25px; overflow: hidden;
@@ -105,8 +104,6 @@
             box-shadow: 0 12px 30px rgba(0,0,0,0.3);
             cursor: pointer; position: relative; transition: transform 0.2s;
         }
-        .flash-card:active { transform: scale(0.92); }
-        .sound-icon { position: absolute; bottom: 8px; right: 12px; font-size: 20px; color: #3498db; }
 
         .roll-anim { animation: magicRoll 0.4s ease-out; }
         @keyframes magicRoll {
@@ -125,21 +122,19 @@
             width: 90%; background: linear-gradient(180deg, #f1c40f 0%, #e67e22 100%);
             color: #fff; font-size: 24px; font-weight: bold; padding: 12px;
             border-radius: 50px; border: 4px solid #fff; cursor: pointer;
-            box-shadow: 0 6px 0 #d35400, 0 8px 20px rgba(0,0,0,0.3); transition: 0.1s;
+            box-shadow: 0 6px 0 #d35400;
         }
-        .btn-draw:active { transform: translateY(4px); box-shadow: 0 2px 0 #d35400; }
 
         .btn-mic {
             width: 90%; background: #e74c3c; color: white; font-size: 16px; font-weight: bold;
             padding: 10px; border-radius: 30px; border: 3px solid white; cursor: pointer;
-            box-shadow: 0 5px 0 #c0392b; transition: 0.1s;
+            box-shadow: 0 5px 0 #c0392b;
         }
 
         .eval-group { display: flex; gap: 12px; width: 90%; }
         .btn-eval {
             flex: 1; padding: 10px; font-size: 18px; font-weight: bold; color: white;
             border-radius: 25px; border: 3px solid white; cursor: pointer;
-            box-shadow: 0 5px 0 rgba(0,0,0,0.3); transition: 0.1s;
         }
         .btn-yes { background: #2ecc71; box-shadow: 0 5px 0 #27ae60; }
         .btn-no { background: #ff7675; box-shadow: 0 5px 0 #d63031; }
@@ -147,9 +142,7 @@
 </head>
 <body>
 
-    <div class="sky-bg">
-        <div class="sun-bright"></div>
-    </div>
+    <div class="sky-bg"><div class="sun-bright"></div></div>
 
     <div class="top-nav">
         <h1 class="title-text">🎈 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်းကမ္ဘာ 🦄</h1>
@@ -168,9 +161,8 @@
     <div class="game-main">
         <div class="speech-bubble" id="speechBubble"></div>
 
-        <!-- 🎥 Dynamic Media Frame -->
         <div class="character-box" id="mediaBox">
-            <!-- Default Cartoon SVG -->
+            <!-- Default SVG Avatar -->
             <svg viewBox="0 0 100 120" style="width:100%; height:100%;">
                 <circle cx="50" cy="40" r="25" fill="#ffdfba"/>
                 <circle cx="40" cy="38" r="3.5" fill="#2d3436"/>
@@ -180,10 +172,7 @@
             </svg>
         </div>
 
-        <div class="flash-card" id="card" onclick="speakCurrentCard()">
-            ?
-            <span class="sound-icon">🔊</span>
-        </div>
+        <div class="flash-card" id="card" onclick="speakCurrentCard()">?</div>
     </div>
 
     <div class="bottom-controls">
@@ -213,54 +202,31 @@
         const starCount = document.getElementById('starCount');
         const speech = document.getElementById('speechBubble');
 
-        function playMagicDrawSound() {
-            try {
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                const ctx = new AudioCtx();
-                const now = ctx.currentTime;
-                const freqs = [329.63, 392.00, 493.88, 587.33, 659.25, 783.99, 987.77];
-                freqs.forEach((freq, index) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, now + index * 0.04);
-                    gain.gain.setValueAtTime(0.2, now + index * 0.04);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.04 + 0.2);
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start(now + index * 0.04);
-                    osc.stop(now + index * 0.04 + 0.2);
-                });
-            } catch(e) {}
-        }
-
         function assess(isCorrect) {
             speech.style.display = 'none';
             if (isCorrect) {
                 stars += 1;
                 starCount.innerText = `⭐ ကြယ်: ${stars}`;
                 showSpeech("💃 ဟေး... မှန်သွားပြီ! 🎉");
-                // 🎬 Show Dancing Video
-                mediaBox.innerHTML = `<video src="dance.mp4" autoplay loop muted playsinline></video>`;
+                // ✅ GitHub relative path 
+                mediaBox.innerHTML = `<video src="./dance.mp4" autoplay loop muted playsinline></video>`;
                 if (typeof confetti === 'function') confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
             } else {
                 showSpeech("😭 မှားသွားတယ်နော် ကြိုးစားပါ~");
-                // 🖼️ Alternate between wrong1.jpg & wrong2.jpg
                 wrongToggle = !wrongToggle;
-                const imgName = wrongToggle ? 'wrong1.jpg' : 'wrong2.jpg';
-                mediaBox.innerHTML = `<img src="${imgName}" alt="Wrong Response">`;
+                const imgName = wrongToggle ? './wrong1.jpg' : './wrong2.jpg';
+                mediaBox.innerHTML = `<img src="${imgName}" alt="Wrong Response" onerror="this.onerror=null; this.src='./wrong1.png';">`;
             }
         }
 
         function drawCard() {
-            playMagicDrawSound();
             card.classList.remove('roll-anim');
             void card.offsetWidth;
             card.classList.add('roll-anim');
 
             const pool = levelsData[mode][level];
             currentTarget = pool[Math.floor(Math.random() * pool.length)];
-            card.innerHTML = `${currentTarget}<span class="sound-icon">🔊</span>`;
+            card.innerText = currentTarget;
             setTimeout(() => { speakCurrentCard(); }, 300);
         }
 
@@ -268,27 +234,12 @@
             if (!currentTarget || currentTarget === '?') return;
             const utterance = new SpeechSynthesisUtterance(currentTarget);
             utterance.lang = mode === 'english' ? 'en-US' : 'my-MM';
-            utterance.rate = 0.8;
             window.speechSynthesis.speak(utterance);
         }
 
-        function setMode(m) {
-            mode = m; level = 1;
-            card.innerHTML = `?<span class="sound-icon">🔊</span>`;
-            currentTarget = '';
-        }
-
-        function showSpeech(text) {
-            speech.innerText = text;
-            speech.style.display = 'block';
-        }
-
-        function restartGame() {
-            stars = 0; level = 1; currentTarget = '';
-            starCount.innerText = `⭐ ကြယ်: 0`;
-            card.innerHTML = `?<span class="sound-icon">🔊</span>`;
-            speech.style.display = 'none';
-        }
+        function setMode(m) { mode = m; level = 1; card.innerText = '?'; currentTarget = ''; }
+        function showSpeech(text) { speech.innerText = text; speech.style.display = 'block'; }
+        function restartGame() { stars = 0; level = 1; currentTarget = ''; starCount.innerText = `⭐ ကြယ်: 0`; card.innerText = '?'; speech.style.display = 'none'; }
     </script>
 </body>
 </html>
