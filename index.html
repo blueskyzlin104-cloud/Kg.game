@@ -16,23 +16,44 @@
             background: #4facfe;
         }
 
+        /* 🌈 Animated Dynamic Background */
         body {
             display: flex; flex-direction: column; justify-content: space-between;
             align-items: center; position: relative;
-            background: linear-gradient(180deg, #00c6ff 0%, #0072ff 50%, #38ef7d 100%);
+            background: linear-gradient(-45deg, #00c6ff, #0072ff, #38ef7d, #11998e);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
             padding: 10px 5px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 🎈 Floating Bubbles in Background */
+        .bubble {
+            position: absolute; bottom: -50px; background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%; pointer-events: none; z-index: 1;
+            animation: floatUp 8s linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.8); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
         }
 
         /* 🔝 Top Nav Bar */
         .top-nav {
             width: 98%; max-width: 600px; padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px);
-            border-radius: 20px; border: 3px solid rgba(255,255,255,0.8);
+            background: rgba(255, 255, 255, 0.35); backdrop-filter: blur(12px);
+            border-radius: 20px; border: 2px solid rgba(255,255,255,0.8);
             display: flex; flex-direction: column; align-items: center; gap: 6px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15); z-index: 10;
         }
 
-        .title-text { font-size: 20px; color: #fff; text-shadow: 2px 2px 0 #d63031; }
+        .title-text { font-size: 20px; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
 
         .status-box { display: flex; justify-content: space-around; width: 100%; align-items: center; }
         
@@ -57,10 +78,10 @@
         .bg-en { background: #2ed573; color: #2f3542; }
         .bg-num { background: #1e90ff; }
 
-        /* 🎮 Main Display Area (Full Size Layout) */
+        /* 🎮 Main Display Area */
         .game-main {
             flex: 1; width: 100%; max-width: 500px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 12px; z-index: 5;
+            align-items: center; justify-content: center; gap: 10px; z-index: 5;
             position: relative; margin: 10px 0;
         }
 
@@ -70,20 +91,20 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: none; z-index: 30; border: 2px solid #fdcb6e;
         }
 
-        /* 🎥 Full Size Frame (ဖွေးဖွေး / Video / Wrong Images) */
+        /* 🎥 Borderless Clean Display Frame (ဘောင်မပါ) */
         .character-box {
             width: 88vw; height: 38vh; max-width: 380px; max-height: 280px;
             border-radius: 25px; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25); background: #ffffff;
-            border: 4px solid #fff;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            background: transparent;
         }
 
         .character-box img, .character-box video {
-            width: 100%; height: 100%; object-fit: cover;
+            width: 100%; height: 100%; object-fit: cover; border-radius: 25px;
         }
 
-        /* 🃏 Flash Card (Full Size) */
+        /* 🃏 Flash Card */
         .flash-card {
             width: 88vw; height: 22vh; max-width: 380px; max-height: 180px;
             background: linear-gradient(145deg, #ffffff, #fff3bf);
@@ -102,7 +123,7 @@
             100% { transform: scale(1) rotate(0deg); }
         }
 
-        /* 🕹️ Full Size Controls */
+        /* 🕹️ Controls */
         .bottom-controls {
             width: 100%; max-width: 450px;
             display: flex; flex-direction: column; gap: 8px; align-items: center; z-index: 10;
@@ -134,6 +155,12 @@
 </head>
 <body>
 
+    <!-- Floating Background Bubbles -->
+    <div class="bubble" style="left: 10%; width: 40px; height: 40px; animation-duration: 7s;"></div>
+    <div class="bubble" style="left: 30%; width: 25px; height: 25px; animation-duration: 5s;"></div>
+    <div class="bubble" style="left: 60%; width: 50px; height: 50px; animation-duration: 9s;"></div>
+    <div class="bubble" style="left: 85%; width: 35px; height: 35px; animation-duration: 6s;"></div>
+
     <div class="top-nav">
         <h1 class="title-text">🎈 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်းကမ္ဘာ 🦄</h1>
         <div class="status-box">
@@ -151,9 +178,10 @@
     <div class="game-main">
         <div class="speech-bubble" id="speechBubble"></div>
 
-        <!-- 🎥 Character & Video Box -->
+        <!-- 🎥 Borderless Character & Video Box -->
         <div class="character-box" id="mediaBox">
-            <img src="./phway.jpg" alt="ဖွေးဖွေး" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1543332164-6e82f355badc?w=500';">
+            <!-- ဖွေးဖွေးပုံ တန်းပေါ်အောင် dance.mp4 သို့မဟုတ် phway.jpg ကို အဆင်သင့်ပြပေးထားသည် -->
+            <img src="./phway.jpg" alt="ဖွေးဖွေး" onerror="this.onerror=null; this.src='./dance.mp4';">
         </div>
 
         <div class="flash-card" id="card" onclick="speakCurrentCard()">
@@ -189,7 +217,6 @@
         const starCount = document.getElementById('starCount');
         const speech = document.getElementById('speechBubble');
 
-        // Audio Beep generator for draw
         function playPopSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -218,7 +245,6 @@
             } else {
                 showSpeech("😭 မှားသွားတယ်နော် ကြိုးစားပါ~");
                 wrongToggle = !wrongToggle;
-                // GitHub ဖိုင်နာမည် worng1.jpg / worng2.jpg အတိုင်း ချိတ်ဆက်ပေးထားပါသည်
                 const imgName = wrongToggle ? './worng1.jpg' : './worng2.jpg';
                 mediaBox.innerHTML = `<img src="${imgName}" alt="Wrong Response">`;
             }
@@ -259,7 +285,7 @@
             starCount.innerText = `⭐ ကြယ်: 0`; 
             card.innerHTML = `?<span class="sound-icon">🔊</span>`; 
             speech.style.display = 'none'; 
-            mediaBox.innerHTML = `<img src="./phway.jpg" alt="ဖွေးဖွေး">`;
+            mediaBox.innerHTML = `<img src="./phway.jpg" alt="ဖွေးဖွေး" onerror="this.onerror=null; this.src='./dance.mp4';">`;
         }
     </script>
 </body>
