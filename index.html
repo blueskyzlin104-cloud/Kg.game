@@ -13,8 +13,7 @@
             font-family: 'Pyidaungsu', sans-serif;
             margin: 0;
             padding: 0;
-            /* Phway Phway Photo as Background with Overlay */
-            background: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), 
+            background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
                         url('https://raw.githubusercontent.com/blueskyzlin104-cloud/Kg.game/main/phway.jpg');
             background-size: cover;
             background-position: center;
@@ -30,7 +29,7 @@
 
         .top-nav {
             width: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             padding: 12px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
@@ -80,52 +79,53 @@
             align-items: center;
         }
 
-        /* Animated Phway Phway Avatar/Sticker */
+        /* Animated Phway Phway Avatar */
         .phway-avatar {
-            width: 110px;
-            height: 110px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             border: 5px solid #ff4757;
             box-shadow: 0 8px 15px rgba(0,0,0,0.2);
             margin-bottom: 10px;
-            transition: all 0.5s ease;
-            background: url('https://raw.githubusercontent.com/blueskyzlin104-cloud/Kg.game/main/phway.jpg');
+            transition: all 0.3s ease;
+            background-image: url('https://raw.githubusercontent.com/blueskyzlin104-cloud/Kg.game/main/phway.jpg');
             background-size: cover;
             background-position: center;
         }
 
         /* Animations */
         .dance {
-            animation: happyDance 0.6s infinite alternate;
+            animation: happyDance 0.5s infinite alternate;
             border-color: #2ed573;
+            box-shadow: 0 0 25px #2ed573;
         }
 
         @keyframes happyDance {
-            0% { transform: translateY(0) rotate(-15deg) scale(1.1); }
-            100% { transform: translateY(-20px) rotate(15deg) scale(1.2); }
+            0% { transform: translateY(0) rotate(-12deg) scale(1.1); }
+            100% { transform: translateY(-18px) rotate(12deg) scale(1.25); }
         }
 
         .cry {
-            animation: sadCry 0.4s infinite alternate;
+            animation: sadCry 0.3s infinite alternate;
             border-color: #ff4757;
-            filter: grayscale(40%);
+            filter: grayscale(50%);
         }
 
         @keyframes sadCry {
-            0% { transform: translateX(-8px) scale(0.95); }
-            100% { transform: translateX(8px) scale(0.95); }
+            0% { transform: translateX(-10px) scale(0.9); }
+            100% { transform: translateX(10px) scale(0.9); }
         }
 
         .card-box {
-            width: 200px;
-            height: 200px;
+            width: 190px;
+            height: 190px;
             background: rgba(255, 255, 255, 0.95);
             border: 8px solid #ffa502;
             border-radius: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 100px;
+            font-size: 90px;
             font-weight: bold;
             color: #ff4757;
             box-shadow: 0 12px 20px rgba(0,0,0,0.2);
@@ -171,14 +171,14 @@
 
         .speech-bubble {
             position: absolute;
-            top: -40px;
+            top: -45px;
             background: #fff;
             color: #2f3542;
-            padding: 6px 15px;
+            padding: 6px 16px;
             border-radius: 15px;
             font-weight: bold;
             font-size: 16px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             display: none;
             z-index: 10;
         }
@@ -239,20 +239,16 @@
         const speech = document.getElementById('speechBubble');
         const avatar = document.getElementById('avatar');
 
-        // မြန်မာမလေး အသံထွက်စနစ်
+        // Web Speech API အသံထွက်စနစ်
         function speakMyanmar(text) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'my-MM';
-            utterance.rate = 0.85;
-            utterance.pitch = 1.3; // ကလေးအသံပုံစံ ရစေရန် pitch မြှင့်ထားသည်
-            
-            // မြန်မာ Voice ရှာဖွေစစ်ဆေးခြင်း
-            const voices = window.speechSynthesis.getVoices();
-            const myVoice = voices.find(v => v.lang.includes('my') || v.name.includes('Myanmar'));
-            if(myVoice) utterance.voice = myVoice;
-
-            window.speechSynthesis.speak(utterance);
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const msg = new SpeechSynthesisUtterance(text);
+                msg.lang = 'my-MM';
+                msg.rate = 0.8;
+                msg.pitch = 1.4;
+                window.speechSynthesis.speak(msg);
+            }
         }
 
         function setMode(m) {
@@ -292,11 +288,6 @@
             speech.innerText = text;
             speech.style.display = 'block';
         }
-
-        // Voice စနစ် အသင့်ဖြစ်အောင် တင်ယူခြင်း
-        window.speechSynthesis.onvoiceschanged = () => {
-            window.speechSynthesis.getVoices();
-        };
     </script>
 </body>
 </html>
