@@ -56,9 +56,17 @@
             display: none; z-index: 30; border: 2px solid #fdcb6e;
         }
 
+        /* 🎙️ Mic Listening Status Indicator */
+        .mic-status {
+            background: #e74c3c; color: white; padding: 4px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: bold; display: none; animation: pulse 1.5s infinite;
+            border: 2px solid white;
+        }
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
         /* 🎥 Character Frame */
         .character-box {
-            width: 88vw; height: 35vh; max-width: 380px; max-height: 260px;
+            width: 88vw; height: 32vh; max-width: 380px; max-height: 240px;
             border-radius: 25px; overflow: hidden; position: relative;
             display: flex; align-items: center; justify-content: center;
             background: rgba(255, 255, 255, 0.25); border: 4px solid #fff;
@@ -66,10 +74,7 @@
         }
 
         .character-box img, .character-box video {
-            width: 100%; height: 100%;
-            object-fit: contain;
-            object-position: top center;
-            border-radius: 20px;
+            width: 100%; height: 100%; object-fit: contain; object-position: top center; border-radius: 20px;
         }
 
         .accessory-overlay {
@@ -94,20 +99,17 @@
         }
 
         .eval-group { display: flex; gap: 10px; width: 92%; }
-        .btn-eval { flex: 1; padding: 10px; font-size: 16px; font-weight: bold; color: white; border-radius: 20px; border: 2px solid white; cursor: pointer; }
+        .btn-eval { flex: 1; padding: 8px; font-size: 15px; font-weight: bold; color: white; border-radius: 20px; border: 2px solid white; cursor: pointer; }
         .btn-yes { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
         .btn-no { background: #ff7675; box-shadow: 0 4px 0 #d63031; }
 
-        /* 🏆 Modals (Trophy & Sticker Book) */
+        /* 🏆 Modals */
         .modal {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0,0,0,0.75); display: none; flex-direction: column;
             align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(8px);
         }
-        .modal-card {
-            background: #fff; padding: 20px; border-radius: 25px; text-align: center;
-            border: 5px solid #f1c40f; max-width: 90%; width: 320px;
-        }
+        .modal-card { background: #fff; padding: 20px; border-radius: 25px; text-align: center; border: 5px solid #f1c40f; max-width: 90%; width: 320px; }
         .modal-title { font-size: 20px; color: #d35400; font-weight: bold; }
         .sticker-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; font-size: 35px; }
         .btn-close { background: #2ecc71; color: white; border: none; padding: 8px 20px; font-size: 16px; font-weight: bold; border-radius: 15px; cursor: pointer; }
@@ -133,6 +135,7 @@
 
     <div class="game-main">
         <div class="speech-bubble" id="speechBubble"></div>
+        <div class="mic-status" id="micStatus">🎙️ ကလေးဖတ်တာ နားထောင်နေပါတယ်...</div>
 
         <div class="character-box" id="mediaBox">
             <div class="accessory-overlay" id="accOverlay"></div>
@@ -177,25 +180,25 @@
     <script>
         const levelsData = {
             myanmar: {
-                1: [ { c: "က", p: "က - ကလေးလေး 👶" }, { c: "ခ", p: "ခ - ခွေးလေး 🐶" }, { c: "ဂ", p: "ဂ - ဂဏန်း 🦀" }, { c: "ဃ", p: "ဃ - ဃေါင်း 🦚" }, { c: "င", p: "င - ငါးလေး 🐟" } ],
-                2: [ { c: "စ", p: "စ - စာကလေး 🐦" }, { c: "ဆ", p: "ဆ - ဆင်ကြီး 🐘" }, { c: "ဇ", p: "ဇ - ဇွန်း 🥄" }, { c: "ဈ", p: "ဈ - ဈေး 🛒" }, { c: "ည", p: "ည - ညောင်ပင် 🌳" } ],
-                3: [ { c: "တ", p: "တ - တံခါး 🚪" }, { c: "ထ", p: "ထ - ထီး ☂️" }, { c: "ဒ", p: "ဒ - ဒိုက် 🦆" }, { c: "ဓ", p: "ဓ - ဓား 🔪" }, { c: "န", p: "န - နွား 🐮" } ],
-                4: [ { c: "ပ", p: "ပ - ပန်းသီး 🍎" }, { c: "ဖ", p: "ဖ - ဖယောင်းတိုင် 🕯️" }, { c: "ဗ", p: "ဗ - ဗုံ 🥁" }, { c: "ဘ", p: "ဘ - ဘောလုံး ⚽" }, { c: "မ", p: "မ - ကြောင် 🐱" } ],
-                5: [ { c: "ယ", p: "ယ - ယုန် 🐰" }, { c: "ရ", p: "ရ - ရထား 🚆" }, { c: "လ", p: "လ - လမင်း 🌙" }, { c: "ဝ", p: "ဝ - ဝက် 🐷" }, { c: "သ", p: "သ - သရက်သီး 🥭" } ]
+                1: [ { c: "က", p: "က - ကလေးလေး 👶", alt: ["က", "ကလေး", "ကလေးလေး"] }, { c: "ခ", p: "ခ - ခွေးလေး 🐶", alt: ["ခ", "ခွေး", "ခွေးလေး"] }, { c: "ဂ", p: "ဂ - ဂဏန်း 🦀", alt: ["ဂ", "ဂဏန်း"] }, { c: "ဃ", p: "ဃ - ဃေါင်း 🦚", alt: ["ဃ", "ဒေါင်း"] }, { c: "င", p: "င - ငါးလေး 🐟", alt: ["င", "ငါး", "ငါးလေး"] } ],
+                2: [ { c: "စ", p: "စ - စာကလေး 🐦", alt: ["စ", "စာကလေး"] }, { c: "ဆ", p: "ဆ - ဆင်ကြီး 🐘", alt: ["ဆ", "ဆင်"] }, { c: "ဇ", p: "ဇ - ဇွန်း 🥄", alt: ["ဇ", "ဇွန်း"] }, { c: "ဈ", p: "ဈ - ဈေး 🛒", alt: ["ဈ", "ဈေး"] }, { c: "ည", p: "ည - ညောင်ပင် 🌳", alt: ["ည", "ညောင်ပင်"] } ],
+                3: [ { c: "တ", p: "တ - တံခါး 🚪", alt: ["တ", "တံခါး"] }, { c: "ထ", p: "ထ - ထီး ☂️", alt: ["ထ", "ထီး"] }, { c: "ဒ", p: "ဒ - ဒိုက် 🦆", alt: ["ဒ", "ဒိုက်", "ဘဲ"] }, { c: "ဓ", p: "ဓ - ဓား 🔪", alt: ["ဓ", "ဓား"] }, { c: "န", p: "န - နွား 🐮", alt: ["န", "နွား"] } ],
+                4: [ { c: "ပ", p: "ပ - ပန်းသီး 🍎", alt: ["ပ", "ပန်းသီး"] }, { c: "ဖ", p: "ဖ - ဖယောင်းတိုင် 🕯️", alt: ["ဖ", "ဖယောင်းတိုင်"] }, { c: "ဗ", p: "ဗ - ဗုံ 🥁", alt: ["ဗ", "ဗုံ"] }, { c: "ဘ", p: "ဘ - ဘောလုံး ⚽", alt: ["ဘ", "ဘောလုံး"] }, { c: "မ", p: "မ - ကြောင် 🐱", alt: ["မ", "ကြောင်"] } ],
+                5: [ { c: "ယ", p: "ယ - ယုန် 🐰", alt: ["ယ", "ယုန်"] }, { c: "ရ", p: "ရ - ရထား 🚆", alt: ["ရ", "ရထား"] }, { c: "လ", p: "လ - လမင်း 🌙", alt: ["လ", "လမင်း"] }, { c: "ဝ", p: "ဝ - ဝက် 🐷", alt: ["ဝ", "ဝက်"] }, { c: "သ", p: "သ - သရက်သီး 🥭", alt: ["သ", "သရက်သီး"] } ]
             },
             english: {
-                1: [ { c: "A", p: "A for Apple 🍎" }, { c: "B", p: "B for Ball ⚽" }, { c: "C", p: "C for Cat 🐱" }, { c: "D", p: "D for Dog 🐶" }, { c: "E", p: "E for Elephant 🐘" } ],
-                2: [ { c: "F", p: "F for Fish 🐟" }, { c: "G", p: "G for Grapes 🍇" }, { c: "H", p: "H for Hat 🎩" }, { c: "I", p: "I for Ice Cream 🍦" }, { c: "J", p: "J for Juice 🧃" } ],
-                3: [ { c: "K", p: "K for Kite 🪁" }, { c: "L", p: "L for Lion 🦁" }, { c: "M", p: "M for Monkey 🐒" }, { c: "N", p: "N for Nest 🪺" }, { c: "O", p: "O for Orange 🍊" } ],
-                4: [ { c: "P", p: "P for Panda 🐼" }, { c: "Q", p: "Q for Queen 👑" }, { c: "R", p: "R for Rabbit 🐰" }, { c: "S", p: "S for Sun ☀️" }, { c: "T", p: "T for Tiger 🐯" } ],
-                5: [ { c: "U", p: "U for Umbrella ☂️" }, { c: "V", p: "V for Van 🚐" }, { c: "W", p: "W for Watermelon 🍉" }, { c: "X", p: "X for Xylophone 🎼" }, { c: "Y", p: "Y for Yo-Yo 🪀" }, { c: "Z", p: "Z for Zebra 🦓" } ]
+                1: [ { c: "A", p: "A for Apple 🍎", alt: ["a", "apple"] }, { c: "B", p: "B for Ball ⚽", alt: ["b", "ball"] }, { c: "C", p: "C for Cat 🐱", alt: ["c", "cat"] }, { c: "D", p: "D for Dog 🐶", alt: ["d", "dog"] }, { c: "E", p: "E for Elephant 🐘", alt: ["e", "elephant"] } ],
+                2: [ { c: "F", p: "F for Fish 🐟", alt: ["f", "fish"] }, { c: "G", p: "G for Grapes 🍇", alt: ["g", "grapes"] }, { c: "H", p: "H for Hat 🎩", alt: ["h", "hat"] }, { c: "I", p: "I for Ice Cream 🍦", alt: ["i", "ice cream"] }, { c: "J", p: "J for Juice 🧃", alt: ["j", "juice"] } ],
+                3: [ { c: "K", p: "K for Kite 🪁", alt: ["k", "kite"] }, { c: "L", p: "L for Lion 🦁", alt: ["l", "lion"] }, { c: "M", p: "M for Monkey 🐒", alt: ["m", "monkey"] }, { c: "N", p: "N for Nest 🪺", alt: ["n", "nest"] }, { c: "O", p: "O for Orange 🍊", alt: ["o", "orange"] } ],
+                4: [ { c: "P", p: "P for Panda 🐼", alt: ["p", "panda"] }, { c: "Q", p: "Q for Queen 👑", alt: ["q", "queen"] }, { c: "R", p: "R for Rabbit 🐰", alt: ["r", "rabbit"] }, { c: "S", p: "S for Sun ☀️", alt: ["s", "sun"] }, { c: "T", p: "T for Tiger 🐯", alt: ["t", "tiger"] } ],
+                5: [ { c: "U", p: "U for Umbrella ☂️", alt: ["u", "umbrella"] }, { c: "V", p: "V for Van 🚐", alt: ["v", "van"] }, { c: "W", p: "W for Watermelon 🍉", alt: ["w", "watermelon"] }, { c: "X", p: "X for Xylophone 🎼", alt: ["x", "xylophone"] }, { c: "Y", p: "Y for Yo-Yo 🪀", alt: ["y", "yo-yo"] }, { c: "Z", p: "Z for Zebra 🦓", alt: ["z", "zebra"] } ]
             },
             numbers: {
-                1: [ { c: "၁", p: "၁ - တစ် 1️⃣" }, { c: "၂", p: "၂ - နှစ် 2️⃣" }, { c: "၃", p: "၃ - သုံး 3️⃣" }, { c: "၄", p: "၄ - လေး 4️⃣" }, { c: "၅", p: "၅ - ငါး 5️⃣" } ],
-                2: [ { c: "၆", p: "၆ - ခြောက် 6️⃣" }, { c: "၇", p: "၇ - ခုနစ် 7️⃣" }, { c: "၈", p: "၈ - ရှစ် 8️⃣" }, { c: "၉", p: "၉ - ကိုး 9️⃣" }, { c: "၁၀", p: "၁၀ - တစ်ဆယ် 🔟" } ],
-                3: [ { c: "1", p: "One 1️⃣" }, { c: "2", p: "Two 2️⃣" }, { c: "3", p: "Three 3️⃣" }, { c: "4", p: "Four 4️⃣" }, { c: "5", p: "Five 5️⃣" } ],
-                4: [ { c: "6", p: "Six 6️⃣" }, { c: "7", p: "Seven 7️⃣" }, { c: "8", p: "Eight 8️⃣" }, { c: "9", p: "Nine 9️⃣" }, { c: "10", p: "Ten 🔟" } ],
-                5: [ { c: "20", p: "Twenty 2️⃣0️⃣" }, { c: "30", p: "Thirty 3️⃣0️⃣" } ]
+                1: [ { c: "၁", p: "၁ - တစ် 1️⃣", alt: ["၁", "တစ်", "1", "one"] }, { c: "၂", p: "၂ - နှစ် 2️⃣", alt: ["၂", "နှစ်", "2", "two"] }, { c: "၃", p: "၃ - သုံး 3️⃣", alt: ["၃", "သုံး", "3", "three"] }, { c: "၄", p: "၄ - လေး 4️⃣", alt: ["၄", "လေး", "4", "four"] }, { c: "၅", p: "၅ - ငါး 5️⃣", alt: ["၅", "ငါး", "5", "five"] } ],
+                2: [ { c: "၆", p: "၆ - ခြောက် 6️⃣", alt: ["၆", "ခြောက်", "6"] }, { c: "၇", p: "၇ - ခုနစ် 7️⃣", alt: ["၇", "ခုနစ်", "7"] }, { c: "၈", p: "၈ - ရှစ် 8️⃣", alt: ["၈", "ရှစ်", "8"] }, { c: "၉", p: "၉ - ကိုး 9️⃣", alt: ["၉", "ကိုး", "9"] }, { c: "၁၀", p: "၁၀ - တစ်ဆယ် 🔟", alt: ["၁၀", "တစ်ဆယ်", "10"] } ],
+                3: [ { c: "1", p: "One 1️⃣", alt: ["1", "one"] }, { c: "2", p: "Two 2️⃣", alt: ["2", "two"] }, { c: "3", p: "Three 3️⃣", alt: ["3", "three"] }, { c: "4", p: "Four 4️⃣", alt: ["4", "four"] }, { c: "5", p: "Five 5️⃣", alt: ["5", "five"] } ],
+                4: [ { c: "6", p: "Six 6️⃣", alt: ["6", "six"] }, { c: "7", p: "Seven 7️⃣", alt: ["7", "seven"] }, { c: "8", p: "Eight 8️⃣", alt: ["8", "eight"] }, { c: "9", p: "Nine 9️⃣", alt: ["9", "nine"] }, { c: "10", p: "Ten 🔟", alt: ["10", "ten"] } ],
+                5: [ { c: "20", p: "Twenty 2️⃣0️⃣", alt: ["20", "twenty"] }, { c: "30", p: "Thirty 3️⃣0️⃣", alt: ["30", "thirty"] } ]
             }
         };
 
@@ -206,39 +209,106 @@
         let level = 1, stars = 0, currentItem = null, wrongCount = 0;
         let accIndex = 0, unlockedStickers = [];
         let audioCtx = null;
+        let recognition = null;
+        let isListening = false;
 
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
 
+        /* 🔊 အသံ Sound Effects (Fanfare & Idol Buzzer) */
         function playSfx(type) {
             initAudio(); if (!audioCtx) return;
-            let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
             let now = audioCtx.currentTime;
 
             if (type === 'draw') {
+                let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
                 osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
-                gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+                gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
                 osc.start(now); osc.stop(now + 0.1);
+
             } else if (type === 'correct') {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now + 0.1);
-                gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
-                osc.start(now); osc.stop(now + 0.3);
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    gain.gain.setValueAtTime(0.3, now + idx * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.08); osc.stop(now + idx * 0.08 + 0.3);
+                });
+
             } else if (type === 'wrong') {
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(250, now); osc.frequency.linearRampToValueAtTime(180, now + 0.2);
-                gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
-                osc.start(now); osc.stop(now + 0.2);
+                let osc1 = audioCtx.createOscillator(), osc2 = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc1.type = 'sawtooth'; osc2.type = 'sawtooth';
+                osc1.frequency.setValueAtTime(130, now); osc2.frequency.setValueAtTime(1385, now);
+                gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.45);
+                osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination);
+                osc1.start(now); osc2.start(now); osc1.stop(now + 0.45); osc2.stop(now + 0.45);
             }
         }
 
-        function speakVoice(text) {
+        /* 🎙️ မြန်မာအသံ ပီပီသသ ထွက်ပေးသည့်စနစ် */
+        function playMyanmarWishSound(text) {
             if (!text) return;
             window.speechSynthesis.cancel();
             const ut = new SpeechSynthesisUtterance(text);
-            ut.lang = 'my-MM'; ut.pitch = 1.2; ut.rate = 0.9;
+            ut.lang = mode === 'english' ? 'en-US' : 'my-MM'; 
+            ut.pitch = 1.2; ut.rate = 0.9;
             window.speechSynthesis.speak(ut);
         }
 
-        function speakCardContent() { if (currentItem) speakVoice(currentItem.p); }
+        function speakCardContent() { if (currentItem) playMyanmarWishSound(currentItem.p); }
+
+        /* 🎤 Auto Speech Recognition (ကလေးဖတ်တာ နားထောင်ပေးသည့်စနစ်) */
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return;
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = function() {
+                isListening = true;
+                document.getElementById('micStatus').style.display = 'block';
+            };
+
+            recognition.onresult = function(event) {
+                stopListening();
+                let spokenText = event.results[0][0].transcript.toLowerCase().trim();
+                console.log("Spoken:", spokenText);
+
+                if (currentItem && currentItem.alt) {
+                    let isMatched = currentItem.alt.some(word => spokenText.includes(word.toLowerCase()));
+                    if (isMatched) {
+                        assess(true);
+                    } else {
+                        assess(false);
+                    }
+                }
+            };
+
+            recognition.onerror = function() { stopListening(); };
+            recognition.onend = function() { stopListening(); };
+        }
+
+        function startListening() {
+            if (!recognition) initSpeechRecognition();
+            if (recognition && !isListening) {
+                try {
+                    recognition.lang = mode === 'english' ? 'en-US' : 'my-MM';
+                    recognition.start();
+                } catch(e) {}
+            }
+        }
+
+        function stopListening() {
+            isListening = false;
+            document.getElementById('micStatus').style.display = 'none';
+            if (recognition) recognition.stop();
+        }
 
         function toggleAcc() {
             accIndex = (accIndex + 1) % accessories.length;
@@ -246,6 +316,7 @@
         }
 
         function drawCard() {
+            stopListening();
             playSfx('draw');
             const cardInner = document.getElementById('cardInner');
             cardInner.classList.remove('flipped');
@@ -255,11 +326,14 @@
                 currentItem = pool[Math.floor(Math.random() * pool.length)];
                 document.getElementById('cardContent').innerText = currentItem.c;
                 cardInner.classList.add('flipped');
-                // မဲနှိုက်လိုက်တဲ့အခါ အသံမထွက်တော့ပါ။ (အဖြေမသိစေရန်)
+
+                // 🎙️ စာလုံးပေါ်လာသည်နှင့် အလိုအလျောက် မိုက်ဖွင့် နားထောင်ပါမည်
+                setTimeout(() => { startListening(); }, 500);
             }, 150);
         }
 
         function assess(isCorrect) {
+            stopListening();
             document.getElementById('speechBubble').style.display = 'none';
 
             if (isCorrect) {
@@ -267,12 +341,11 @@
                 document.getElementById('starCount').innerText = `⭐ ${stars}`;
                 playSfx('correct');
 
-                // အမှန်နှိပ်လိုက်မှ စာလုံးအသံ + "ဖွေးဖွေးလေးကတော်လိုက်တာ" ဖတ်ပြမည်
                 const phonics = currentItem ? currentItem.p : "";
                 showSpeech(`💃 ${phonics}! 🎉`);
                 setTimeout(() => { 
-                    speakVoice(`${phonics} ... ဖွေးဖွေးလေးကတော်လိုက်တာ`); 
-                }, 200);
+                    playMyanmarWishSound(`${phonics} ... ဖွေးဖွေးလေးကတော်လိုက်တာ`); 
+                }, 400);
 
                 document.getElementById('mediaBox').querySelector('img')?.remove();
                 document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><video src="dance.mp4" autoplay loop muted playsinline></video>`;
@@ -287,13 +360,17 @@
                 checkLevelUp();
 
             } else {
-                wrongCount += 1; playSfx('wrong');
+                wrongCount += 1;
+                playSfx('wrong');
+
                 let phonics = currentItem ? currentItem.p : "";
                 let msg = wrongCount >= 3 ? "ဖွေးဖွေးမှားပဲမှားနေတာ စိတ်တိုလာပြီနော်" : "ဖွေးဖွေးမှားနေပြီနော်";
                 showSpeech(`😭 ${msg}`);
+                
                 setTimeout(() => { 
-                    speakVoice(`ဒီစာလုံးလေးက ${phonics} ပါ ... ${msg}`); 
-                }, 200);
+                    playMyanmarWishSound(`ဒီစာလုံးလေးက ${phonics} ပါ ... ${msg}`); 
+                }, 450);
+                
                 document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="worng1.jpg" alt="Wrong">`;
             }
         }
@@ -311,7 +388,7 @@
                 document.getElementById('trophyIcon').innerText = "🐣 ➡️ " + pets[level-1].split(" ")[0];
                 document.getElementById('trophySub').innerText = `ဉာဏ်ကြီးရှင် ဥလေး ကွဲသွားပြီး ${pets[level-1]} ရရှိလိုက်ပါပြီ!`;
                 document.getElementById('trophyModal').style.display = 'flex';
-                speakVoice(`ဟာ... ဉာဏ်ကြီးရှင် ဥလေး ကွဲပြီး ${pets[level-1]} ရသွားပါပြီ!`);
+                playMyanmarWishSound(`ဟာ... ဉာဏ်ကြီးရှင် ဥလေး ကွဲပြီး ${pets[level-1]} ရသွားပါပြီ!`);
             }
         }
 
@@ -328,9 +405,9 @@
         }
 
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function setMode(m) { mode = m; document.getElementById('cardInner').classList.remove('flipped'); document.getElementById('cardContent').innerText = '?'; currentItem = null; }
+        function setMode(m) { mode = m; document.getElementById('cardInner').classList.remove('flipped'); document.getElementById('cardContent').innerText = '?'; currentItem = null; stopListening(); }
         function showSpeech(text) { const speech = document.getElementById('speechBubble'); speech.innerText = text; speech.style.display = 'block'; }
-        function restartGame() { stars = 0; level = 1; wrongCount = 0; currentItem = null; unlockedStickers = []; document.getElementById('starCount').innerText = `⭐ 0`; document.getElementById('levelText').innerText = `🏆 Level: 1`; document.getElementById('cardInner').classList.remove('flipped'); document.getElementById('cardContent').innerText = '?'; document.getElementById('speechBubble').style.display = 'none'; document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="phway.jpg" alt="ဖွေးဖွေး">`; }
+        function restartGame() { stopListening(); stars = 0; level = 1; wrongCount = 0; currentItem = null; unlockedStickers = []; document.getElementById('starCount').innerText = `⭐ 0`; document.getElementById('levelText').innerText = `🏆 Level: 1`; document.getElementById('cardInner').classList.remove('flipped'); document.getElementById('cardContent').innerText = '?'; document.getElementById('speechBubble').style.display = 'none'; document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="phway.jpg" alt="ဖွေးဖွေး">`; }
     </script>
 </body>
 </html>
