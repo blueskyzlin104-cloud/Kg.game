@@ -32,7 +32,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 🎈 Floating Bubbles in Background */
+        /* 🎈 Floating Background Bubbles */
         .bubble {
             position: absolute; bottom: -50px; background: rgba(255, 255, 255, 0.25);
             border-radius: 50%; pointer-events: none; z-index: 1;
@@ -91,17 +91,19 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: none; z-index: 30; border: 2px solid #fdcb6e;
         }
 
-        /* 🎥 Borderless Clean Display Frame (ဘောင်မပါ) */
+        /* 🎥 Borderless Display Frame (ခေါင်းမပြတ်စေရန် object-fit: contain သုံးထားသည်) */
         .character-box {
             width: 88vw; height: 38vh; max-width: 380px; max-height: 280px;
             border-radius: 25px; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-            background: transparent;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
         }
 
+        /* ⚠️ Contain သုံးထားသဖြင့် ဗီဒီယို/ပုံ တစ်ခုလုံး အပြည့်အစုံ ပေါ်မည်ဖြစ်သည် */
         .character-box img, .character-box video {
-            width: 100%; height: 100%; object-fit: cover; border-radius: 25px;
+            width: 100%; height: 100%; object-fit: contain; border-radius: 25px;
         }
 
         /* 🃏 Flash Card */
@@ -178,10 +180,10 @@
     <div class="game-main">
         <div class="speech-bubble" id="speechBubble"></div>
 
-        <!-- 🎥 Borderless Character & Video Box -->
+        <!-- 🎥 Character & Video Box -->
         <div class="character-box" id="mediaBox">
-            <!-- ဖွေးဖွေးပုံ တန်းပေါ်အောင် dance.mp4 သို့မဟုတ် phway.jpg ကို အဆင်သင့်ပြပေးထားသည် -->
-            <img src="./phway.jpg" alt="ဖွေးဖွေး" onerror="this.onerror=null; this.src='./dance.mp4';">
+            <!-- စစဖွင့်ချင်း ပုံမပေါ်တာမျိုးမဖြစ်အောင် အဆင်သင့်ရှိတဲ့ dance.mp4 ကို တန်းပွင့်ခိုင်းထားပါသည် -->
+            <video src="./dance.mp4" autoplay loop muted playsinline></video>
         </div>
 
         <div class="flash-card" id="card" onclick="speakCurrentCard()">
@@ -285,7 +287,7 @@
             starCount.innerText = `⭐ ကြယ်: 0`; 
             card.innerHTML = `?<span class="sound-icon">🔊</span>`; 
             speech.style.display = 'none'; 
-            mediaBox.innerHTML = `<img src="./phway.jpg" alt="ဖွေးဖွေး" onerror="this.onerror=null; this.src='./dance.mp4';">`;
+            mediaBox.innerHTML = `<video src="./dance.mp4" autoplay loop muted playsinline></video>`;
         }
     </script>
 </body>
