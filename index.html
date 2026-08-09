@@ -56,18 +56,27 @@
             display: none; z-index: 30; border: 2px solid #fdcb6e;
         }
 
-        /* 🎥 Character Frame with Accessories Overlay */
+        /* 🎥 Character Frame (ခေါင်းမပြတ်အောင် ပြင်ဆင်ထားသည့် CSS) */
         .character-box {
-            width: 85vw; height: 30vh; max-width: 360px; max-height: 220px;
+            width: 88vw; height: 35vh; max-width: 380px; max-height: 260px;
             border-radius: 25px; overflow: hidden; position: relative;
             display: flex; align-items: center; justify-content: center;
-            background: rgba(255, 255, 255, 0.15); border: 4px solid #fff;
+            background: rgba(255, 255, 255, 0.25); border: 4px solid #fff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
-        .character-box img, .character-box video { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; }
 
-        /* 👑 Overlay Hat / Accessory */
+        /* object-fit: contain နှင့် object-position: top ကြောင့် ခေါင်းမပြတ်တော့ပါ */
+        .character-box img, .character-box video {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            object-position: top center;
+            border-radius: 20px;
+        }
+
+        /* 👑 Overlay Hat / Accessory တည်နေရာ ပြန်ပြင်ထားခြင်း */
         .accessory-overlay {
-            position: absolute; top: 0px; font-size: 50px; z-index: 20;
+            position: absolute; top: 2px; left: 50%;
+            transform: translateX(-50%); font-size: 45px; z-index: 20;
             pointer-events: none; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
 
@@ -179,7 +188,7 @@
             english: {
                 1: [ { c: "A", p: "A for Apple 🍎" }, { c: "B", p: "B for Ball ⚽" }, { c: "C", p: "C for Cat 🐱" }, { c: "D", p: "D for Dog 🐶" }, { c: "E", p: "E for Elephant 🐘" } ],
                 2: [ { c: "F", p: "F for Fish 🐟" }, { c: "G", p: "G for Grapes 🍇" }, { c: "H", p: "H for Hat 🎩" }, { c: "I", p: "I for Ice Cream 🍦" }, { c: "J", p: "J for Juice 🧃" } ],
-                3: [ { c: "K", p: "K for Kite 🪁" }, { c: "L", p: "L for Lion 🦁" }, { c: "M", p: "M for Monkey 🐒" }, { c: "N", p: "N for Nest ု" }, { c: "O", p: "O for Orange 🍊" } ],
+                3: [ { c: "K", p: "K for Kite 🪁" }, { c: "L", p: "L for Lion 🦁" }, { c: "M", p: "M for Monkey 🐒" }, { c: "N", p: "N for Nest 🪺" }, { c: "O", p: "O for Orange 🍊" } ],
                 4: [ { c: "P", p: "P for Panda 🐼" }, { c: "Q", p: "Q for Queen 👑" }, { c: "R", p: "R for Rabbit 🐰" }, { c: "S", p: "S for Sun ☀️" }, { c: "T", p: "T for Tiger 🐯" } ],
                 5: [ { c: "U", p: "U for Umbrella ☂️" }, { c: "V", p: "V for Van 🚐" }, { c: "W", p: "W for Watermelon 🍉" }, { c: "X", p: "X for Xylophone 🎼" }, { c: "Y", p: "Y for Yo-Yo 🪀" }, { c: "Z", p: "Z for Zebra 🦓" } ]
             },
@@ -254,7 +263,6 @@
                 document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><video src="dance.mp4" autoplay loop muted playsinline></video>`;
                 if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
 
-                // Sticker Reward every 10 stars
                 if (stars % 10 === 0) {
                     let st = stickerList[(stars / 10 - 1) % stickerList.length];
                     if (!unlockedStickers.includes(st)) unlockedStickers.push(st);
@@ -322,4 +330,3 @@
     </script>
 </body>
 </html>
-NC
