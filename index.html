@@ -6,6 +6,9 @@
     <title>🎈 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်းကမ္ဘာ 🦄</title>
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <!-- ResponsiveVoice SDK (API Key မလိုဘဲ မိန်းကလေးအသံ တိုက်ရိုက် ထွက်မည့် စနစ်) -->
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Padauk:wght@700&display=swap');
 
@@ -16,7 +19,7 @@
             background: #4facfe;
         }
 
-        /* 🌈 Animated Dynamic Background */
+        /* 🌈 Dynamic Background */
         body {
             display: flex; flex-direction: column; justify-content: space-between;
             align-items: center; position: relative;
@@ -32,7 +35,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 🎈 Floating Background Bubbles */
+        /* 🎈 Floating Bubbles */
         .bubble {
             position: absolute; bottom: -50px; background: rgba(255, 255, 255, 0.25);
             border-radius: 50%; pointer-events: none; z-index: 1;
@@ -100,13 +103,8 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        .character-box img {
-            width: 100%; height: 100%; object-fit: cover; border-radius: 25px;
-        }
-
-        .character-box video {
-            width: 100%; height: 100%; object-fit: contain; border-radius: 25px;
-        }
+        .character-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 25px; }
+        .character-box video { width: 100%; height: 100%; object-fit: contain; border-radius: 25px; }
 
         /* 🃏 Flash Card */
         .flash-card {
@@ -159,7 +157,6 @@
 </head>
 <body>
 
-    <!-- Floating Background Bubbles -->
     <div class="bubble" style="left: 10%; width: 40px; height: 40px; animation-duration: 7s;"></div>
     <div class="bubble" style="left: 30%; width: 25px; height: 25px; animation-duration: 5s;"></div>
     <div class="bubble" style="left: 60%; width: 50px; height: 50px; animation-duration: 9s;"></div>
@@ -182,12 +179,11 @@
     <div class="game-main">
         <div class="speech-bubble" id="speechBubble"></div>
 
-        <!-- 🎥 Character Display Area -->
         <div class="character-box" id="mediaBox">
             <img src="phway.jpg" alt="ဖွေးဖွေး">
         </div>
 
-        <div class="flash-card" id="card" onclick="speakCurrentCard()">
+        <div class="flash-card" id="card" onclick="speakText(currentTarget)">
             ?
             <span class="sound-icon">🔊</span>
         </div>
@@ -195,7 +191,7 @@
 
     <div class="bottom-controls">
         <button class="btn-draw" onclick="drawCard()">🎲 မဲနှိုက်မယ်</button>
-        <button class="btn-mic" id="micBtn" onclick="speakCurrentCard()">🎙️ အသံဖတ်ပြမယ် (နားထောင်)</button>
+        <button class="btn-mic" id="micBtn" onclick="speakText(currentTarget)">🎙️ အသံဖတ်ပြမယ် (နားထောင်)</button>
         <div class="eval-group">
             <button class="btn-eval btn-yes" onclick="assess(true)">🎉 မှန်တယ်</button>
             <button class="btn-eval btn-no" onclick="assess(false)">😭 မှားတယ်</button>
@@ -213,6 +209,7 @@
         let level = 1;
         let stars = 0;
         let currentTarget = '';
+        let wrongCount = 0;
         let wrongToggle = false;
 
         const card = document.getElementById('card');
@@ -220,82 +217,56 @@
         const starCount = document.getElementById('starCount');
         const speech = document.getElementById('speechBubble');
 
-        // 🎵 အသံစနစ်သစ် (Audio Context)
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // 🎙️ 100% တိုက်ရိုက် မိန်းကလေးအသံ ထွက်စေမည့် Cloud Voice Engine
+        function speakVoice(text, pitchVal = 1.2, rateVal = 0.9) {
+            if(!text || text === '?') return;
 
-        // 🎼 မဲနှိုက်သံ
-        function playPopSound() {
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.1);
-            } catch(e) {}
+            // ResponsiveVoice သို့မဟုတ် Direct Online Audio Stream နည်းလမ်းဖြင့် မိန်းကလေးအသံ ဖတ်ပြမည်
+            if (window.responsiveVoice) {
+                responsiveVoice.cancel();
+                // Burmese သို့မဟုတ် English Female Voice ကို သုံးမည်
+                const voiceName = mode === 'english' ? "US English Female" : "Thai Female"; 
+                responsiveVoice.speak(text, voiceName, { pitch: pitchVal, rate: rateVal });
+            } else {
+                // Fallback: Online Translate TTS Stream
+                const lang = mode === 'english' ? 'en' : 'my';
+                const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${lang}&client=tw-ob`);
+                audio.play();
+            }
         }
 
-        // 🎵 မှန်ရင် ထွက်မယ့် ချိုသာတေးသံလေး (Chime / Harp Sound)
-        function playSweetSound() {
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-                notes.forEach((freq, index) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + index * 0.08);
-                    
-                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + index * 0.08);
-                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + index * 0.08 + 0.5);
-                    
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(audioCtx.currentTime + index * 0.08);
-                    osc.stop(audioCtx.currentTime + index * 0.08 + 0.5);
-                });
-            } catch(e) {}
-        }
-
-        // 👻 မှားရင် ထွက်မယ့် ကြောက်စရာ အသံနက်ကြီး (Scary Low Monster Sound)
-        function playScarySound() {
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.6); // အသံနိမ့်ဆင်းသွားမည်
-                
-                gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.6);
-            } catch(e) {}
+        function speakText(text) {
+            speakVoice(text, 1.1, 0.85);
         }
 
         function assess(isCorrect) {
             speech.style.display = 'none';
+
             if (isCorrect) {
-                playSweetSound(); // ချိုသာတဲ့ အသံလေး
+                wrongCount = 0;
                 stars += 1;
                 starCount.innerText = `⭐ ကြယ်: ${stars}`;
-                showSpeech("💃 ဟေး... မှန်သွားပြီ! 🎉");
+                
+                const msg = "ဖွေးဖွေးလေးက တော်လိုက်တာ";
+                showSpeech(`💃 ${msg}! 🎉`);
+                speakVoice(msg, 1.3, 0.9); // ချိုသာနူးညံ့သည့် မိန်းကလေးအသံ
+
                 mediaBox.innerHTML = `<video src="dance.mp4" autoplay loop muted playsinline></video>`;
                 if (typeof confetti === 'function') confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+
             } else {
-                playScarySound(); // ကြောက်စရာ အသံနက်ကြီး
-                showSpeech("😭 မှားသွားတယ်နော် ကြိုးစားပါ~");
+                wrongCount += 1;
+                let msg = "";
+
+                if (wrongCount >= 3) {
+                    msg = "ဖွေးဖွေး မှားပဲ မှားနေတာ စိတ်တိုလာပြီနော်";
+                    speakVoice(msg, 0.8, 1.0); // စိတ်တိုသည့် ခပ်မာမာအသံ
+                } else {
+                    msg = "ဖွေးဖွေး မှားနေပြီနော်";
+                    speakVoice(msg, 1.0, 0.9); // သတိပေးသည့် မိန်းကလေးအသံ
+                }
+
+                showSpeech(`😭 ${msg}`);
                 wrongToggle = !wrongToggle;
                 const imgName = wrongToggle ? 'worng1.jpg' : 'worng2.jpg';
                 mediaBox.innerHTML = `<img src="${imgName}" alt="Wrong Response">`;
@@ -303,7 +274,6 @@
         }
 
         function drawCard() {
-            playPopSound();
             card.classList.remove('roll-anim');
             void card.offsetWidth;
             card.classList.add('roll-anim');
@@ -312,16 +282,7 @@
             currentTarget = pool[Math.floor(Math.random() * pool.length)];
             card.innerHTML = `${currentTarget}<span class="sound-icon">🔊</span>`;
             
-            setTimeout(() => { speakCurrentCard(); }, 200);
-        }
-
-        function speakCurrentCard() {
-            if (!currentTarget || currentTarget === '?') return;
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(currentTarget);
-            utterance.lang = mode === 'english' ? 'en-US' : 'my-MM';
-            utterance.rate = 0.8;
-            window.speechSynthesis.speak(utterance);
+            setTimeout(() => { speakText(currentTarget); }, 200);
         }
 
         function setMode(m) { 
@@ -333,7 +294,7 @@
         function showSpeech(text) { speech.innerText = text; speech.style.display = 'block'; }
 
         function restartGame() { 
-            stars = 0; level = 1; currentTarget = ''; 
+            stars = 0; level = 1; wrongCount = 0; currentTarget = ''; 
             starCount.innerText = `⭐ ကြယ်: 0`; 
             card.innerHTML = `?<span class="sound-icon">🔊</span>`; 
             speech.style.display = 'none'; 
