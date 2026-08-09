@@ -13,11 +13,7 @@
             font-family: 'Pyidaungsu', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
-                        url('https://raw.githubusercontent.com/blueskyzlin104-cloud/Kg.game/main/phway.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: #f0f3f8;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -32,8 +28,8 @@
             background: rgba(255, 255, 255, 0.95);
             padding: 12px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            border-bottom: 6px solid #ff4757;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-bottom: 5px solid #ff4757;
         }
 
         .title {
@@ -77,27 +73,29 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin: 15px 0;
         }
 
         /* Animated Phway Phway Avatar */
         .phway-avatar {
-            width: 120px;
-            height: 120px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
-            border: 5px solid #ff4757;
+            border: 6px solid #ff4757;
             box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             transition: all 0.3s ease;
+            background-color: #ffeaa7;
             background-image: url('https://raw.githubusercontent.com/blueskyzlin104-cloud/Kg.game/main/phway.jpg');
             background-size: cover;
             background-position: center;
         }
 
-        /* Animations */
+        /* Dance & Cry Animations */
         .dance {
             animation: happyDance 0.5s infinite alternate;
-            border-color: #2ed573;
-            box-shadow: 0 0 25px #2ed573;
+            border-color: #2ed573 !important;
+            box-shadow: 0 0 25px #2ed573 !important;
         }
 
         @keyframes happyDance {
@@ -107,19 +105,19 @@
 
         .cry {
             animation: sadCry 0.3s infinite alternate;
-            border-color: #ff4757;
-            filter: grayscale(50%);
+            border-color: #ff4757 !important;
+            filter: grayscale(40%);
         }
 
         @keyframes sadCry {
-            0% { transform: translateX(-10px) scale(0.9); }
-            100% { transform: translateX(10px) scale(0.9); }
+            0% { transform: translateX(-10px) scale(0.95); }
+            100% { transform: translateX(10px) scale(0.95); }
         }
 
         .card-box {
-            width: 190px;
-            height: 190px;
-            background: rgba(255, 255, 255, 0.95);
+            width: 180px;
+            height: 180px;
+            background: #ffffff;
             border: 8px solid #ffa502;
             border-radius: 35px;
             display: flex;
@@ -128,7 +126,7 @@
             font-size: 90px;
             font-weight: bold;
             color: #ff4757;
-            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.15);
         }
 
         .controls {
@@ -239,16 +237,18 @@
         const speech = document.getElementById('speechBubble');
         const avatar = document.getElementById('avatar');
 
-        // Web Speech API အသံထွက်စနစ်
-        function speakMyanmar(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const msg = new SpeechSynthesisUtterance(text);
-                msg.lang = 'my-MM';
-                msg.rate = 0.8;
-                msg.pitch = 1.4;
-                window.speechSynthesis.speak(msg);
-            }
+        // Online High Quality Myanmar TTS
+        function playAudioText(text) {
+            const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=my&client=tw-ob`;
+            const audio = new Audio(url);
+            audio.play().catch(e => {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const msg = new SpeechSynthesisUtterance(text);
+                    msg.lang = 'my-MM';
+                    window.speechSynthesis.speak(msg);
+                }
+            });
         }
 
         function setMode(m) {
@@ -271,11 +271,11 @@
             if (isCorrect) {
                 avatar.classList.add('dance');
                 showSpeech("💃 တော်လိုက်တာ ဖွေးဖွေးလေးက! 🎉");
-                speakMyanmar("တော်လိုက်တာ ဖွေးဖွေးလေးက");
+                playAudioText("တော်လိုက်တာ ဖွေးဖွေးလေးက");
             } else {
                 avatar.classList.add('cry');
                 showSpeech("😭 ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ~");
-                speakMyanmar("ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ");
+                playAudioText("ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ");
             }
         }
 
