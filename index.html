@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🦄 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်းကမ္ဘာ 🎈</title>
+    <title>🎈 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်းကမ္ဘာ 🦄</title>
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -22,7 +22,7 @@
             background: linear-gradient(180deg, #38ef7d 0%, #11998e 100%);
         }
 
-        /* 🌳 Full Screen Cartoon Sky & World */
+        /* 🌳 Sky Background Animation */
         .sky-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 60%;
             background: linear-gradient(180deg, #00c6ff 0%, #0072ff 100%);
@@ -30,100 +30,83 @@
         }
 
         .sun-bright {
-            position: absolute; top: 15px; right: 20px; width: 80px; height: 80px;
-            background: #f1c40f; border-radius: 50%; box-shadow: 0 0 50px #f39c12;
+            position: absolute; top: 15px; right: 20px; width: 70px; height: 70px;
+            background: #f1c40f; border-radius: 50%; box-shadow: 0 0 40px #f39c12;
             animation: sunPulse 2s infinite alternate;
         }
         @keyframes sunPulse { 0% { transform: scale(0.9); } 100% { transform: scale(1.1); } }
 
-        .cloud {
-            position: absolute; background: #fff; border-radius: 50px; opacity: 0.9;
-            animation: moveClouds 18s linear infinite;
-        }
-        .cloud::before, .cloud::after { content: ''; position: absolute; background: #fff; border-radius: 50%; }
-        .c1 { width: 140px; height: 45px; top: 10%; left: -150px; }
-        .c1::before { width: 60px; height: 60px; top: -25px; left: 25px; }
-        .c1::after { width: 50px; height: 50px; top: -20px; left: 65px; }
-
-        @keyframes moveClouds { 0% { transform: translateX(0); } 100% { transform: translateX(115vw); } }
-
-        /* 🔝 Big & Clear Top Bar */
+        /* 🔝 Top Nav */
         .top-nav {
-            width: 95%; max-width: 600px; margin-top: 10px; padding: 12px;
+            width: 95%; max-width: 600px; margin-top: 10px; padding: 10px;
             background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(10px);
             border-radius: 25px; border: 3px solid rgba(255,255,255,0.6);
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 10;
         }
 
-        .title-text { font-size: 24px; color: #fff; text-shadow: 2px 3px 0 #d63031; }
+        .title-text { font-size: 22px; color: #fff; text-shadow: 2px 2px 0 #d63031; }
 
         .status-box { display: flex; justify-content: space-around; width: 100%; align-items: center; }
         
         .badge {
-            background: #ffeaa7; padding: 6px 16px; border-radius: 20px;
-            font-size: 18px; color: #d35400; border: 3px solid #f39c12; font-weight: bold;
+            background: #ffeaa7; padding: 4px 14px; border-radius: 20px;
+            font-size: 16px; color: #d35400; border: 3px solid #f39c12; font-weight: bold;
             box-shadow: 0 4px 0 #e67e22;
         }
 
         .btn-restart {
             background: #ff7675; color: white; border: 2px solid #fff;
-            padding: 6px 16px; border-radius: 20px; font-size: 16px; font-weight: bold;
+            padding: 4px 14px; border-radius: 20px; font-size: 15px; font-weight: bold;
             cursor: pointer; box-shadow: 0 4px 0 #d63031;
         }
         .btn-restart:active { transform: translateY(3px); box-shadow: none; }
 
-        .mode-box { display: flex; gap: 10px; }
+        .mode-box { display: flex; gap: 8px; }
         .btn-m {
-            padding: 8px 16px; border-radius: 18px; font-size: 16px; font-weight: bold;
+            padding: 6px 14px; border-radius: 16px; font-size: 15px; font-weight: bold;
             color: white; border: 2px solid #fff; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.3);
         }
         .bg-mm { background: #ff4757; }
         .bg-en { background: #2ed573; color: #2f3542; }
         .bg-num { background: #1e90ff; }
 
-        /* 🎮 Main Game Center Area */
+        /* 🎮 Main Display Area */
         .game-main {
             flex: 1; width: 100%; display: flex; flex-direction: column;
             align-items: center; justify-content: center; z-index: 5; position: relative;
         }
 
         .speech-bubble {
-            position: absolute; top: -10px; background: #fff; color: #2d3436;
-            padding: 10px 20px; border-radius: 25px; font-size: 18px; font-weight: bold;
+            position: absolute; top: -15px; background: #fff; color: #2d3436;
+            padding: 8px 18px; border-radius: 20px; font-size: 16px; font-weight: bold;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: none; z-index: 30;
-            animation: popUp 0.3s ease-out;
-        }
-        @keyframes popUp { 0% { transform: scale(0); } 100% { transform: scale(1); } }
-
-        /* 👧 Full Character Avatar */
-        .phway-character {
-            width: 170px; height: 180px; margin-bottom: 10px;
-            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3));
-        }
-        .phway-character svg { width: 100%; height: 100%; }
-
-        .dance { animation: fullDance 0.5s infinite alternate ease-in-out; }
-        @keyframes fullDance {
-            0% { transform: translateY(0) rotate(-12deg) scale(1.1); }
-            100% { transform: translateY(-20px) rotate(12deg) scale(1.2); }
         }
 
-        .cry { animation: fullCry 0.2s infinite alternate; filter: grayscale(50%); }
-        @keyframes fullCry { 0% { transform: translateX(-10px); } 100% { transform: translateX(10px); } }
-
-        /* 🃏 Giant Flash Card */
-        .flash-card {
-            width: 190px; height: 190px;
-            background: linear-gradient(145deg, #ffffff, #ffeaa7);
-            border: 10px solid #f1c40f; border-radius: 40px;
+        /* 🎥 Character Container (SVG, Image, Video) */
+        .character-box {
+            width: 180px; height: 180px; margin-bottom: 10px;
+            border-radius: 25px; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
-            font-size: 100px; font-weight: bold; color: #e74c3c;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3), inset 0 5px 10px #fff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3); background: #fff;
+        }
+
+        .character-box img, .character-box video {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        /* 🃏 Flash Card */
+        .flash-card {
+            width: 170px; height: 170px;
+            background: linear-gradient(145deg, #ffffff, #ffeaa7);
+            border: 8px solid #f1c40f; border-radius: 35px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 90px; font-weight: bold; color: #e74c3c;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
             cursor: pointer; position: relative; transition: transform 0.2s;
         }
         .flash-card:active { transform: scale(0.92); }
-        .sound-icon { position: absolute; bottom: 10px; right: 15px; font-size: 22px; color: #3498db; }
+        .sound-icon { position: absolute; bottom: 8px; right: 12px; font-size: 20px; color: #3498db; }
 
         .roll-anim { animation: magicRoll 0.4s ease-out; }
         @keyframes magicRoll {
@@ -131,52 +114,45 @@
             100% { transform: scale(1) rotate(0deg); }
         }
 
-        /* 🕹️ Big Bottom Controls */
+        /* 🕹️ Controls */
         .bottom-controls {
-            width: 100%; max-width: 450px; padding: 15px;
-            display: flex; flex-direction: column; gap: 12px; align-items: center;
+            width: 100%; max-width: 450px; padding: 12px;
+            display: flex; flex-direction: column; gap: 10px; align-items: center;
             z-index: 10; margin-bottom: 10px;
         }
 
         .btn-draw {
             width: 90%; background: linear-gradient(180deg, #f1c40f 0%, #e67e22 100%);
-            color: #fff; font-size: 26px; font-weight: bold; padding: 14px;
+            color: #fff; font-size: 24px; font-weight: bold; padding: 12px;
             border-radius: 50px; border: 4px solid #fff; cursor: pointer;
-            box-shadow: 0 8px 0 #d35400, 0 10px 20px rgba(0,0,0,0.3);
-            text-shadow: 2px 2px 0 #b13900; transition: 0.1s;
+            box-shadow: 0 6px 0 #d35400, 0 8px 20px rgba(0,0,0,0.3); transition: 0.1s;
         }
-        .btn-draw:active { transform: translateY(5px); box-shadow: 0 3px 0 #d35400; }
+        .btn-draw:active { transform: translateY(4px); box-shadow: 0 2px 0 #d35400; }
 
         .btn-mic {
-            width: 90%; background: #e74c3c; color: white; font-size: 18px; font-weight: bold;
-            padding: 12px; border-radius: 35px; border: 3px solid white; cursor: pointer;
-            box-shadow: 0 6px 0 #c0392b; transition: 0.1s;
+            width: 90%; background: #e74c3c; color: white; font-size: 16px; font-weight: bold;
+            padding: 10px; border-radius: 30px; border: 3px solid white; cursor: pointer;
+            box-shadow: 0 5px 0 #c0392b; transition: 0.1s;
         }
-        .btn-mic:active { transform: translateY(3px); box-shadow: 0 3px 0 #c0392b; }
 
-        .eval-group { display: flex; gap: 15px; width: 90%; }
+        .eval-group { display: flex; gap: 12px; width: 90%; }
         .btn-eval {
-            flex: 1; padding: 12px; font-size: 20px; font-weight: bold; color: white;
-            border-radius: 30px; border: 3px solid white; cursor: pointer;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.3); transition: 0.1s;
+            flex: 1; padding: 10px; font-size: 18px; font-weight: bold; color: white;
+            border-radius: 25px; border: 3px solid white; cursor: pointer;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.3); transition: 0.1s;
         }
-        .btn-yes { background: #2ecc71; box-shadow: 0 6px 0 #27ae60; }
-        .btn-yes:active { transform: translateY(4px); box-shadow: none; }
-        .btn-no { background: #ff7675; box-shadow: 0 6px 0 #d63031; }
-        .btn-no:active { transform: translateY(4px); box-shadow: none; }
+        .btn-yes { background: #2ecc71; box-shadow: 0 5px 0 #27ae60; }
+        .btn-no { background: #ff7675; box-shadow: 0 5px 0 #d63031; }
     </style>
 </head>
 <body>
 
-    <!-- ☁️ Full Sky Background -->
     <div class="sky-bg">
         <div class="sun-bright"></div>
-        <div class="cloud c1"></div>
     </div>
 
-    <!-- 🔝 Top Bar Panel -->
     <div class="top-nav">
-        <h1 class="title-text">🦄 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်းကမ္ဘာ 🎈</h1>
+        <h1 class="title-text">🎈 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်းကမ္ဘာ 🦄</h1>
         <div class="status-box">
             <span class="badge" id="starCount">⭐ ကြယ်: 0</span>
             <span class="badge" id="levelText">Level: 1</span>
@@ -189,47 +165,27 @@
         </div>
     </div>
 
-    <!-- 🎮 Center Game Screen -->
     <div class="game-main">
         <div class="speech-bubble" id="speechBubble"></div>
 
-        <!-- 👧 Full Size Cartoon Character -->
-        <div class="phway-character" id="avatarBox">
-            <svg viewBox="0 0 100 120">
-                <!-- Hair Back -->
-                <path d="M15,35 C5,55 10,100 30,105 C35,90 25,55 25,40 Z" fill="#2d3436"/>
-                <path d="M85,35 C95,55 90,100 70,105 C65,90 75,55 75,40 Z" fill="#2d3436"/>
-                <!-- Dress -->
-                <path d="M35,65 L65,65 L75,100 L25,100 Z" fill="#ff7675"/>
-                <!-- Arms -->
-                <path d="M25,68 C15,75 15,85 22,90" fill="none" stroke="#ffdfba" stroke-width="6" stroke-linecap="round"/>
-                <path d="M75,68 C85,75 85,85 78,90" fill="none" stroke="#ffdfba" stroke-width="6" stroke-linecap="round"/>
-                <!-- Face -->
+        <!-- 🎥 Dynamic Media Frame -->
+        <div class="character-box" id="mediaBox">
+            <!-- Default Cartoon SVG -->
+            <svg viewBox="0 0 100 120" style="width:100%; height:100%;">
                 <circle cx="50" cy="40" r="25" fill="#ffdfba"/>
-                <!-- Hair Top -->
-                <path d="M25,35 C28,15 72,15 75,35 C68,22 32,22 25,35 Z" fill="#2d3436"/>
-                <!-- Bow -->
-                <path d="M40,15 C35,8 45,10 50,15 C55,10 65,8 60,15 Z" fill="#f1c40f"/>
-                <circle cx="50" cy="15" r="3" fill="#e67e22"/>
-                <!-- Eyes -->
                 <circle cx="40" cy="38" r="3.5" fill="#2d3436"/>
                 <circle cx="60" cy="38" r="3.5" fill="#2d3436"/>
-                <!-- Cheeks -->
-                <ellipse cx="33" cy="43" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
-                <ellipse cx="67" cy="43" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
-                <!-- Smile -->
                 <path d="M42,46 Q50,54 58,46" fill="none" stroke="#d63031" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M35,65 L65,65 L75,100 L25,100 Z" fill="#ff7675"/>
             </svg>
         </div>
 
-        <!-- 🃏 Card Box -->
         <div class="flash-card" id="card" onclick="speakCurrentCard()">
             ?
             <span class="sound-icon">🔊</span>
         </div>
     </div>
 
-    <!-- 🕹️ Big Action Buttons -->
     <div class="bottom-controls">
         <button class="btn-draw" onclick="drawCard()">🎲 မဲနှိုက်မယ်</button>
         <button class="btn-mic" id="micBtn" onclick="startListening()">🎙️ အသံဖတ်ပြမယ် (နားထောင်)</button>
@@ -250,12 +206,12 @@
         let level = 1;
         let stars = 0;
         let currentTarget = '';
+        let wrongToggle = false;
 
         const card = document.getElementById('card');
-        const levelText = document.getElementById('levelText');
+        const mediaBox = document.getElementById('mediaBox');
         const starCount = document.getElementById('starCount');
         const speech = document.getElementById('speechBubble');
-        const avatarBox = document.getElementById('avatarBox');
 
         function playMagicDrawSound() {
             try {
@@ -268,7 +224,7 @@
                     const gain = ctx.createGain();
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(freq, now + index * 0.04);
-                    gain.gain.setValueAtTime(0.25, now + index * 0.04);
+                    gain.gain.setValueAtTime(0.2, now + index * 0.04);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.04 + 0.2);
                     osc.connect(gain);
                     gain.connect(ctx.destination);
@@ -278,13 +234,34 @@
             } catch(e) {}
         }
 
-        function restartGame() {
-            stars = 0; level = 1; currentTarget = '';
-            starCount.innerText = `⭐ ကြယ်: 0`;
-            levelText.innerText = `Level: 1`;
-            card.innerHTML = `?<span class="sound-icon">🔊</span>`;
-            resetAvatar();
-            showSpeech("🔄 အသစ်ပြန်စပါပြီဗျာ!");
+        function assess(isCorrect) {
+            speech.style.display = 'none';
+            if (isCorrect) {
+                stars += 1;
+                starCount.innerText = `⭐ ကြယ်: ${stars}`;
+                showSpeech("💃 ဟေး... မှန်သွားပြီ! 🎉");
+                // 🎬 Show Dancing Video
+                mediaBox.innerHTML = `<video src="dance.mp4" autoplay loop muted playsinline></video>`;
+                if (typeof confetti === 'function') confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+            } else {
+                showSpeech("😭 မှားသွားတယ်နော် ကြိုးစားပါ~");
+                // 🖼️ Alternate between wrong1.jpg & wrong2.jpg
+                wrongToggle = !wrongToggle;
+                const imgName = wrongToggle ? 'wrong1.jpg' : 'wrong2.jpg';
+                mediaBox.innerHTML = `<img src="${imgName}" alt="Wrong Response">`;
+            }
+        }
+
+        function drawCard() {
+            playMagicDrawSound();
+            card.classList.remove('roll-anim');
+            void card.offsetWidth;
+            card.classList.add('roll-anim');
+
+            const pool = levelsData[mode][level];
+            currentTarget = pool[Math.floor(Math.random() * pool.length)];
+            card.innerHTML = `${currentTarget}<span class="sound-icon">🔊</span>`;
+            setTimeout(() => { speakCurrentCard(); }, 300);
         }
 
         function speakCurrentCard() {
@@ -297,42 +274,8 @@
 
         function setMode(m) {
             mode = m; level = 1;
-            levelText.innerText = `Level: 1`;
             card.innerHTML = `?<span class="sound-icon">🔊</span>`;
             currentTarget = '';
-            resetAvatar();
-        }
-
-        function drawCard() {
-            resetAvatar();
-            playMagicDrawSound();
-            card.classList.remove('roll-anim');
-            void card.offsetWidth;
-            card.classList.add('roll-anim');
-
-            const pool = levelsData[mode][level];
-            currentTarget = pool[Math.floor(Math.random() * pool.length)];
-            card.innerHTML = `${currentTarget}<span class="sound-icon">🔊</span>`;
-            setTimeout(() => { speakCurrentCard(); }, 300);
-        }
-
-        function assess(isCorrect) {
-            resetAvatar();
-            if (isCorrect) {
-                stars += 1;
-                starCount.innerText = `⭐ ကြယ်: ${stars}`;
-                avatarBox.classList.add('dance');
-                showSpeech("💃 တော်လိုက်တာ ဖွေးဖွေးလေးက! 🎉");
-                if (typeof confetti === 'function') confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
-            } else {
-                avatarBox.classList.add('cry');
-                showSpeech("😭 ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ~");
-            }
-        }
-
-        function resetAvatar() {
-            avatarBox.classList.remove('dance', 'cry');
-            speech.style.display = 'none';
         }
 
         function showSpeech(text) {
@@ -340,23 +283,11 @@
             speech.style.display = 'block';
         }
 
-        function startListening() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return alert("Microphone ကို ခွင့်ပြုပေးပါဗျာ!");
-            const recognition = new SpeechRecognition();
-            recognition.lang = mode === 'english' ? 'en-US' : 'my-MM';
-            document.getElementById('micBtn').innerText = "🎧 နားထောင်နေပါတယ်...";
-            recognition.start();
-
-            recognition.onresult = function(e) {
-                document.getElementById('micBtn').innerText = "🎙️ အသံဖတ်ပြမယ် (နားထောင်)";
-                const spoken = e.results[0][0].transcript.trim();
-                if (!currentTarget || currentTarget === '?') return showSpeech("မဲ အရင်နှိုက်ပေးပါနော်! 🎲");
-                assess(spoken.toLowerCase().includes(currentTarget.toLowerCase()));
-            };
-            recognition.onerror = function() {
-                document.getElementById('micBtn').innerText = "🎙️ အသံဖတ်ပြမယ် (နားထောင်)";
-            };
+        function restartGame() {
+            stars = 0; level = 1; currentTarget = '';
+            starCount.innerText = `⭐ ကြယ်: 0`;
+            card.innerHTML = `?<span class="sound-icon">🔊</span>`;
+            speech.style.display = 'none';
         }
     </script>
 </body>
