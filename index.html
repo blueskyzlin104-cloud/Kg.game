@@ -246,7 +246,8 @@
             window.speechSynthesis.cancel();
             const ut = new SpeechSynthesisUtterance(text);
             ut.lang = mode === 'english' ? 'en-US' : 'my-MM'; 
-            ut.pitch = 1.2; ut.rate = 0.9;
+            ut.pitch = 1.1; ut.rate = 0.5
+            ;
             window.speechSynthesis.speak(ut);
         }
 
