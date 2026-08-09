@@ -91,10 +91,9 @@
             transition: all 0.3s ease;
         }
 
-        .phway-avatar-box img {
+        .phway-avatar-box svg {
             width: 100%;
             height: 100%;
-            object-fit: cover;
         }
 
         .dance {
@@ -203,7 +202,29 @@
     <div class="card-container">
         <div class="speech-bubble" id="speechBubble"></div>
         <div class="phway-avatar-box" id="avatarBox">
-            <img id="phwayImg" src="phway.jpg" alt="ဖွေးဖွေးလေး" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=PhwayPhway';">
+            <!-- ချစ်စရာ ကလေးမလေး ပုံရုပ် Vector SVG -->
+            <svg viewBox="0 0 100 100">
+                <!-- Hair Back -->
+                <path d="M20,35 C10,50 15,80 30,85 C35,80 30,50 30,40 Z" fill="#2d3436"/>
+                <path d="M80,35 C90,50 85,80 70,85 C65,80 70,50 70,40 Z" fill="#2d3436"/>
+                <!-- Face -->
+                <circle cx="50" cy="50" r="30" fill="#ffdfba"/>
+                <!-- Hair Top / Bangs -->
+                <path d="M20,45 C25,20 75,20 80,45 C70,30 30,30 20,45 Z" fill="#2d3436"/>
+                <!-- Ribbon / Bow -->
+                <path d="M40,22 C35,12 45,15 50,22 C55,15 65,12 60,22 Z" fill="#ff4757"/>
+                <circle cx="50" cy="22" r="3" fill="#ffa502"/>
+                <!-- Eyes -->
+                <circle cx="38" cy="48" r="4" fill="#2d3436"/>
+                <circle cx="62" cy="48" r="4" fill="#2d3436"/>
+                <circle cx="39" cy="46" r="1.5" fill="#ffffff"/>
+                <circle cx="63" cy="46" r="1.5" fill="#ffffff"/>
+                <!-- Cheeks -->
+                <ellipse cx="33" cy="54" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
+                <ellipse cx="67" cy="54" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
+                <!-- Smile -->
+                <path d="M42,58 Q50,66 58,58" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round"/>
+            </svg>
         </div>
         <div class="card-box" id="card">?</div>
     </div>
@@ -252,7 +273,6 @@
                 const now = ctx.currentTime;
                 
                 if (isSuccess) {
-                    // 🎉 မှန်ရင် အောင်မြင်သည့် ဂိမ်းတီးလုံးသံ (Happy Melody)
                     const notes = [523.25, 659.25, 783.99, 1046.50];
                     notes.forEach((freq, idx) => {
                         const osc = ctx.createOscillator();
@@ -267,7 +287,6 @@
                         osc.stop(now + idx * 0.1 + 0.3);
                     });
                 } else {
-                    // 😭 မှားရင် သတိပေးသံ (Buzzer Sound)
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
                     osc.type = 'sawtooth';
