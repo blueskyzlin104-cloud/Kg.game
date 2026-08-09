@@ -137,8 +137,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-bottom: 20px;
             width: 100%;
         }
 
@@ -146,12 +146,38 @@
             background: linear-gradient(180deg, #eccc68 0%, #ffa502 100%);
             border: 4px solid #fff;
             color: #d63031;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
-            padding: 12px 40px;
+            padding: 10px 35px;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 6px 0 #e1b12c, 0 10px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 0 #e1b12c, 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .mic-btn {
+            background: #ff4757;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: 3px solid white;
+            cursor: pointer;
+            box-shadow: 0 5px 12px rgba(255, 71, 87, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .listening {
+            background: #2ed573 !important;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
         }
 
         .eval-group {
@@ -160,8 +186,8 @@
         }
 
         .btn-eval {
-            padding: 12px 22px;
-            font-size: 18px;
+            padding: 10px 20px;
+            font-size: 16px;
             border: 3px solid white;
             border-radius: 30px;
             color: white;
@@ -179,7 +205,7 @@
             padding: 6px 16px;
             border-radius: 15px;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             display: none;
             z-index: 10;
@@ -202,27 +228,19 @@
     <div class="card-container">
         <div class="speech-bubble" id="speechBubble"></div>
         <div class="phway-avatar-box" id="avatarBox">
-            <!-- ချစ်စရာ ကလေးမလေး ပုံရုပ် Vector SVG -->
             <svg viewBox="0 0 100 100">
-                <!-- Hair Back -->
                 <path d="M20,35 C10,50 15,80 30,85 C35,80 30,50 30,40 Z" fill="#2d3436"/>
                 <path d="M80,35 C90,50 85,80 70,85 C65,80 70,50 70,40 Z" fill="#2d3436"/>
-                <!-- Face -->
                 <circle cx="50" cy="50" r="30" fill="#ffdfba"/>
-                <!-- Hair Top / Bangs -->
                 <path d="M20,45 C25,20 75,20 80,45 C70,30 30,30 20,45 Z" fill="#2d3436"/>
-                <!-- Ribbon / Bow -->
                 <path d="M40,22 C35,12 45,15 50,22 C55,15 65,12 60,22 Z" fill="#ff4757"/>
                 <circle cx="50" cy="22" r="3" fill="#ffa502"/>
-                <!-- Eyes -->
                 <circle cx="38" cy="48" r="4" fill="#2d3436"/>
                 <circle cx="62" cy="48" r="4" fill="#2d3436"/>
                 <circle cx="39" cy="46" r="1.5" fill="#ffffff"/>
                 <circle cx="63" cy="46" r="1.5" fill="#ffffff"/>
-                <!-- Cheeks -->
                 <ellipse cx="33" cy="54" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
                 <ellipse cx="67" cy="54" rx="4" ry="2" fill="#ff7675" opacity="0.6"/>
-                <!-- Smile -->
                 <path d="M42,58 Q50,66 58,58" fill="none" stroke="#d63031" stroke-width="3" stroke-linecap="round"/>
             </svg>
         </div>
@@ -231,6 +249,10 @@
 
     <div class="controls">
         <button class="draw-btn" onclick="drawCard()">🎲 မဲနှိုက်မယ်</button>
+
+        <button class="mic-btn" id="micBtn" onclick="startListening()">
+            🎙️ အသံဖတ်ပြမယ် (နားထောင်)
+        </button>
 
         <div class="eval-group">
             <button class="btn-eval btn-yes" onclick="assess(true)">🎉 မှန်တယ်</button>
@@ -259,13 +281,14 @@
 
         let mode = 'myanmar';
         let level = 1;
+        let currentTarget = '';
 
         const card = document.getElementById('card');
         const levelText = document.getElementById('levelText');
         const speech = document.getElementById('speechBubble');
         const avatarBox = document.getElementById('avatarBox');
+        const micBtn = document.getElementById('micBtn');
 
-        // Web Audio Synthesizer (၁၀၀% ကြားရမည့် ဂိမ်းအသံ)
         function playChime(isSuccess) {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -309,14 +332,15 @@
             level = 1;
             levelText.innerText = `Level: 1 (${m === 'myanmar' ? 'မြန်မာ' : m === 'english' ? 'English' : 'ဂဏန်း'})`;
             card.innerText = '?';
+            currentTarget = '';
             resetAvatar();
         }
 
         function drawCard() {
             resetAvatar();
             const pool = levelsData[mode][level];
-            const randomChar = pool[Math.floor(Math.random() * pool.length)];
-            card.innerText = randomChar;
+            currentTarget = pool[Math.floor(Math.random() * pool.length)];
+            card.innerText = currentTarget;
         }
 
         function assess(isCorrect) {
@@ -339,6 +363,57 @@
         function showSpeech(text) {
             speech.innerText = text;
             speech.style.display = 'block';
+        }
+
+        // 🎙️ Voice Speech Recognition (အသံဖတ်နားထောင်စနစ်)
+        function startListening() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert("သင့် ဖုန်း browser က အသံဖတ်စနစ်ကို မပံ့ပိုးပါဗျာ။ Chrome သုံးပေးပါ!");
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+
+            recognition.lang = mode === 'english' ? 'en-US' : 'my-MM';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            micBtn.classList.add('listening');
+            micBtn.innerText = "🎧 နားထောင်နေပါတယ်...";
+
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                micBtn.classList.remove('listening');
+                micBtn.innerText = "🎙️ အသံဖတ်ပြမယ် (နားထောင်)";
+                
+                const spokenText = event.results[0][0].transcript.trim();
+                console.log("Spoken:", spokenText);
+
+                if (!currentTarget || currentTarget === '?') {
+                    showSpeech("မဲ အရင်နှိုက်ပေးပါနော်! 🎲");
+                    return;
+                }
+
+                // တိုက်ဆိုင်စစ်ဆေးခြင်း
+                if (spokenText.toLowerCase().includes(currentTarget.toLowerCase())) {
+                    assess(true);
+                } else {
+                    assess(false);
+                }
+            };
+
+            recognition.onerror = function() {
+                micBtn.classList.remove('listening');
+                micBtn.innerText = "🎙️ အသံဖတ်ပြမယ် (နားထောင်)";
+                showSpeech("အသံ မကြားရပါဘူးနော် 😅");
+            };
+
+            recognition.onend = function() {
+                micBtn.classList.remove('listening');
+                micBtn.innerText = "🎙️ အသံဖတ်ပြမယ် (နားထောင်)";
+            };
         }
     </script>
 </body>
