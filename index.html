@@ -91,7 +91,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: none; z-index: 30; border: 2px solid #fdcb6e;
         }
 
-        /* 🎥 Character Frame (ဖွေးဖွေးပုံနှင့် Video အတွက် အဆင်ပြေအောင် ပြင်ဆင်ထားသည်) */
+        /* 🎥 Character Frame (ခေါင်းမပြတ်အောင် သီးသန့်ပြင်ဆင်ထားပါသည်) */
         .character-box {
             width: 88vw; height: 35vh; max-width: 380px; max-height: 260px;
             border-radius: 25px; overflow: hidden;
@@ -100,8 +100,14 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        .character-box img, .character-box video {
+        /* ဖွေးဖွေးပုံအတွက် (အပြည့်ပေါ်ရန်) */
+        .character-box img {
             width: 100%; height: 100%; object-fit: cover; border-radius: 25px;
+        }
+
+        /* 🎯 ကတဲ့ Video အတွက် ခေါင်းမပြတ်ဘဲ တစ်ကိုယ်လုံး ကွက်တိ ပေါ်စေရန် contain သုံးထားပါသည် */
+        .character-box video {
+            width: 100%; height: 100%; object-fit: contain; border-radius: 25px;
         }
 
         /* 🃏 Flash Card */
@@ -178,7 +184,7 @@
     <div class="game-main">
         <div class="speech-bubble" id="speechBubble"></div>
 
-        <!-- 🎥 Character Display Area (ဖွေးဖွေး ပုံတန်းပေါ်မည်) -->
+        <!-- 🎥 Character Display Area -->
         <div class="character-box" id="mediaBox">
             <img src="phway.jpg" alt="ဖွေးဖွေး">
         </div>
