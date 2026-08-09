@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🦄 ဖွေးဖွေးလေးရဲ့ စာသင်ခရီးစဉ် 🎈</title>
+    <!-- Responsive Voice for crystal clear Myanmar Audio -->
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@700&display=swap');
 
@@ -77,18 +79,25 @@
         }
 
         /* Animated Phway Phway Avatar */
-        .phway-avatar {
-            width: 130px;
-            height: 130px;
+        .phway-avatar-box {
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             border: 6px solid #ff4757;
             box-shadow: 0 8px 15px rgba(0,0,0,0.2);
             margin-bottom: 12px;
-            transition: all 0.3s ease;
+            overflow: hidden;
             background-color: #ffeaa7;
-            background-image: url('https://raw.githubusercontent.com/blueskyzlin104-cloud/Kg.game/main/phway.jpg');
-            background-size: cover;
-            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .phway-avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* Dance & Cry Animations */
@@ -197,7 +206,9 @@
 
     <div class="card-container">
         <div class="speech-bubble" id="speechBubble"></div>
-        <div class="phway-avatar" id="avatar"></div>
+        <div class="phway-avatar-box" id="avatarBox">
+            <img id="phwayImg" src="phway.jpg" alt="Phway Phway" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/blueskyzlin104-cloud/Kg.game/main/phway.jpg';">
+        </div>
         <div class="card-box" id="card">?</div>
     </div>
 
@@ -235,20 +246,19 @@
         const card = document.getElementById('card');
         const levelText = document.getElementById('levelText');
         const speech = document.getElementById('speechBubble');
-        const avatar = document.getElementById('avatar');
+        const avatarBox = document.getElementById('avatarBox');
 
-        // Online High Quality Myanmar TTS
-        function playAudioText(text) {
-            const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=my&client=tw-ob`;
-            const audio = new Audio(url);
-            audio.play().catch(e => {
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
-                    const msg = new SpeechSynthesisUtterance(text);
-                    msg.lang = 'my-MM';
-                    window.speechSynthesis.speak(msg);
-                }
-            });
+        // Play Myanmar Speech with fallbacks
+        function speakMyanmar(text) {
+            if (window.responsiveVoice) {
+                responsiveVoice.speak(text, "Thai Female", {rate: 0.9, pitch: 1.2});
+            } else if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const msg = new SpeechSynthesisUtterance(text);
+                msg.lang = 'my-MM';
+                msg.rate = 0.85;
+                window.speechSynthesis.speak(msg);
+            }
         }
 
         function setMode(m) {
@@ -269,18 +279,18 @@
         function assess(isCorrect) {
             resetAvatar();
             if (isCorrect) {
-                avatar.classList.add('dance');
+                avatarBox.classList.add('dance');
                 showSpeech("💃 တော်လိုက်တာ ဖွေးဖွေးလေးက! 🎉");
-                playAudioText("တော်လိုက်တာ ဖွေးဖွေးလေးက");
+                speakMyanmar("တော်လိုက်တာ ဖွေးဖွေးလေးက");
             } else {
-                avatar.classList.add('cry');
+                avatarBox.classList.add('cry');
                 showSpeech("😭 ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ~");
-                playAudioText("ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ");
+                speakMyanmar("ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ");
             }
         }
 
         function resetAvatar() {
-            avatar.classList.remove('dance', 'cry');
+            avatarBox.classList.remove('dance', 'cry');
             speech.style.display = 'none';
         }
 
