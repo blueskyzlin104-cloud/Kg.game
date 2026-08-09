@@ -199,35 +199,79 @@
         let currentTarget = '';
         let wrongCount = 0;
         let wrongToggle = false;
-        let currentAudio = null;
+        let audioCtx = null;
 
         const card = document.getElementById('card');
         const mediaBox = document.getElementById('mediaBox');
         const starCount = document.getElementById('starCount');
         const speech = document.getElementById('speechBubble');
 
-        // 🔊 မြန်မာစာ သီးသန့် အသံထွက်ပေးမည့် Audio Stream
-        function playGoogleVoice(text) {
-            if(!text) return;
-
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
+        // 🔊 Audio Context ထူထောင်ခြင်း
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
+        }
 
-            const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=my&client=tw-ob`;
-            currentAudio = new Audio(audioUrl);
+        // 🎵 လန်းဆန်းသည့် sound effects များ ပြုလုပ်ပေးသည့် စနစ်
+        function playSfx(type) {
+            initAudio();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'draw') {
+                // မဲနှိုက်အသံ (Pop Sound)
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now);
+                osc.stop(now + 0.1);
+            } else if (type === 'correct') {
+                // အဖြေမှန်အသံ (Happy Victory Tune)
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'wrong') {
+                // အဖြေမှားအသံ (Warning Buzz)
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(250, now);
+                osc.frequency.linearRampToValueAtTime(180, now + 0.2);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            }
+        }
+
+        // 🗣️ မြန်မာစာ မိန်းကလေးအသံ ပြောဆိုသည့် စနစ်
+        function speakVoice(text) {
+            if (!text) return;
             
-            let playPromise = currentAudio.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    if ('speechSynthesis' in window) {
-                        window.speechSynthesis.cancel();
-                        const ut = new SpeechSynthesisUtterance(text);
-                        ut.lang = 'my-MM';
-                        window.speechSynthesis.speak(ut);
-                    }
-                });
+            // Web Speech API
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const ut = new SpeechSynthesisUtterance(text);
+                ut.lang = 'my-MM';
+                ut.pitch = 1.2; // ခပ်မြှင့်မြှင့် မိန်းကလေးအသံ
+                ut.rate = 0.9;
+                window.speechSynthesis.speak(ut);
+            } else {
+                // Audio Stream Fallback
+                const audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=my&client=tw-ob`);
+                audio.play();
             }
         }
 
@@ -235,21 +279,25 @@
             speech.style.display = 'none';
 
             if (isCorrect) {
-                wrongCount = 0; // အမှား ရေတွက်ချက် ပြန်စမည်
+                wrongCount = 0;
                 stars += 1;
                 starCount.innerText = `⭐ ကြယ်: ${stars}`;
                 
+                playSfx('correct'); // မှန်သည့် Sound Effect
+
                 const msg = "ဖွေးဖွေးလေးကတောိလိုက်တာ";
                 showSpeech(`💃 ${msg}! 🎉`);
-                playGoogleVoice(msg);
+                
+                setTimeout(() => { speakVoice(msg); }, 300);
 
                 mediaBox.innerHTML = `<video src="dance.mp4" autoplay loop muted playsinline></video>`;
                 if (typeof confetti === 'function') confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
 
             } else {
                 wrongCount += 1;
-                let msg = "";
+                playSfx('wrong'); // မှားသည့် Sound Effect
 
+                let msg = "";
                 if (wrongCount >= 3) {
                     msg = "ဖွေးဖွေးမှားပဲမှားနေတာ စိတ်တိုလာပြီနော်";
                 } else {
@@ -257,7 +305,7 @@
                 }
 
                 showSpeech(`😭 ${msg}`);
-                playGoogleVoice(msg);
+                setTimeout(() => { speakVoice(msg); }, 250);
 
                 wrongToggle = !wrongToggle;
                 const imgName = wrongToggle ? 'worng1.jpg' : 'worng2.jpg';
@@ -266,13 +314,14 @@
         }
 
         function drawCard() {
+            playSfx('draw'); // မဲနှိုက်သည့် Sound Effect
             card.classList.remove('roll-anim');
             void card.offsetWidth;
             card.classList.add('roll-anim');
 
             const pool = levelsData[mode][level];
             currentTarget = pool[Math.floor(Math.random() * pool.length)];
-            card.innerText = currentTarget; // စာလုံးပဲ ပြမည် (အသံ မထွက်တော့ပါ)
+            card.innerText = currentTarget;
         }
 
         function setMode(m) { 
