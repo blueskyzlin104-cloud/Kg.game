@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🦄 ဖွေးဖွေးလေးရဲ့ စာသင်ခရီးစဉ် 🎈</title>
-    <!-- Responsive Voice for crystal clear Myanmar Audio -->
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@700&display=swap');
 
@@ -78,7 +76,6 @@
             margin: 15px 0;
         }
 
-        /* Animated Phway Phway Avatar */
         .phway-avatar-box {
             width: 140px;
             height: 140px;
@@ -100,7 +97,6 @@
             object-fit: cover;
         }
 
-        /* Dance & Cry Animations */
         .dance {
             animation: happyDance 0.5s infinite alternate;
             border-color: #2ed573 !important;
@@ -207,7 +203,7 @@
     <div class="card-container">
         <div class="speech-bubble" id="speechBubble"></div>
         <div class="phway-avatar-box" id="avatarBox">
-            <img id="phwayImg" src="phway.jpg" alt="Phway Phway" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/blueskyzlin104-cloud/Kg.game/main/phway.jpg';">
+            <img id="phwayImg" src="phway.jpg" alt="ဖွေးဖွေးလေး" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=PhwayPhway';">
         </div>
         <div class="card-box" id="card">?</div>
     </div>
@@ -248,16 +244,44 @@
         const speech = document.getElementById('speechBubble');
         const avatarBox = document.getElementById('avatarBox');
 
-        // Play Myanmar Speech with fallbacks
-        function speakMyanmar(text) {
-            if (window.responsiveVoice) {
-                responsiveVoice.speak(text, "Thai Female", {rate: 0.9, pitch: 1.2});
-            } else if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const msg = new SpeechSynthesisUtterance(text);
-                msg.lang = 'my-MM';
-                msg.rate = 0.85;
-                window.speechSynthesis.speak(msg);
+        // Web Audio Synthesizer (၁၀၀% ကြားရမည့် ဂိမ်းအသံ)
+        function playChime(isSuccess) {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                const ctx = new AudioContext();
+                const now = ctx.currentTime;
+                
+                if (isSuccess) {
+                    // 🎉 မှန်ရင် အောင်မြင်သည့် ဂိမ်းတီးလုံးသံ (Happy Melody)
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.3, now + idx * 0.1);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.3);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.1);
+                        osc.stop(now + idx * 0.1 + 0.3);
+                    });
+                } else {
+                    // 😭 မှားရင် သတိပေးသံ (Buzzer Sound)
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.exponentialRampToValueAtTime(110, now + 0.4);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                }
+            } catch(e) {
+                console.log(e);
             }
         }
 
@@ -278,14 +302,13 @@
 
         function assess(isCorrect) {
             resetAvatar();
+            playChime(isCorrect);
             if (isCorrect) {
                 avatarBox.classList.add('dance');
                 showSpeech("💃 တော်လိုက်တာ ဖွေးဖွေးလေးက! 🎉");
-                speakMyanmar("တော်လိုက်တာ ဖွေးဖွေးလေးက");
             } else {
                 avatarBox.classList.add('cry');
                 showSpeech("😭 ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ~");
-                speakMyanmar("ကြိုးစားပါအုန်း ဖွေးဖွေးလေးရေ");
             }
         }
 
