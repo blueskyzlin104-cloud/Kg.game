@@ -16,6 +16,7 @@
         .top-nav { width: 95%; max-width: 500px; padding: 10px; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px); border-radius: 20px; text-align: center; color: white; margin-top: 10px; }
         .mode-box { display: flex; justify-content: center; gap: 5px; margin-top: 5px; }
         .btn-m { padding: 4px 8px; border-radius: 10px; border: none; font-size: 12px; cursor: pointer; color: white; }
+        .btn-restart { padding: 4px 10px; border-radius: 10px; border: none; font-size: 12px; cursor: pointer; background: #ff7675; color: white; }
         .bg-mm { background: #ff4757; } .bg-en { background: #2ed573; } .bg-num { background: #1e90ff; }
 
         /* 🎥 Character Box */
@@ -42,7 +43,10 @@
 
     <div class="top-nav">
         <h1>🎈 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်း 🦄</h1>
-        <div id="starCount">⭐ ကြယ်: 0</div>
+        <div style="display: flex; justify-content: center; gap: 10px; align-items: center;">
+            <div id="starCount">⭐ ကြယ်: 0</div>
+            <button class="btn-restart" onclick="restartGame()">🔄 Restart</button>
+        </div>
         <div class="mode-box">
             <button class="btn-m bg-mm" onclick="setMode('myanmar')">🇲🇲 မြန်မာ</button>
             <button class="btn-m bg-en" onclick="setMode('english')">🔤 ABC</button>
@@ -73,20 +77,35 @@
         let stars = 0, currentTarget = '', wrongCount = 0;
         let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-        function playCheer() {
-            // လက်ခုပ်တီးသံ Simulate လုပ်ခြင်း
-            for(let i=0; i<5; i++) {
-                setTimeout(() => {
-                    let osc = audioCtx.createOscillator();
-                    let gain = audioCtx.createGain();
-                    osc.type = 'square'; 
-                    osc.frequency.setValueAtTime(1000 + Math.random()*500, audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                    osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-                }, i*80);
+        // အသံစနစ်အစုံ
+        function playSfx(type) {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            
+            if (type === 'draw') { // မဲနှိုက်သံ
+                osc.type = 'sine'; osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+            } else if (type === 'wrong') { // မှားတဲ့အသံ
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(250, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(180, audioCtx.currentTime + 0.2);
+            } else if (type === 'cheer') { // လက်ခုပ်သံ
+                for(let i=0; i<3; i++) {
+                    setTimeout(() => {
+                        let cOsc = audioCtx.createOscillator();
+                        let cGain = audioCtx.createGain();
+                        cOsc.type = 'square'; cOsc.frequency.setValueAtTime(1000 + Math.random()*500, audioCtx.currentTime);
+                        cGain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                        cGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                        cOsc.connect(cGain); cGain.connect(audioCtx.destination);
+                        cOsc.start(); cOsc.stop(audioCtx.currentTime + 0.1);
+                    }, i*100);
+                }
+                return;
             }
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.2);
         }
 
         function speakVoice(text) {
@@ -96,32 +115,41 @@
             window.speechSynthesis.speak(ut);
         }
 
-        function speakCardContent() {
-            if (currentTarget) speakVoice(currentTarget);
+        function speakCardContent() { if (currentTarget) speakVoice(currentTarget); }
+
+        function restartGame() {
+            stars = 0; wrongCount = 0; currentTarget = '';
+            document.getElementById('starCount').innerText = "⭐ ကြယ်: 0";
+            document.getElementById('cardInner').classList.remove('flipped');
+            document.getElementById('cardContent').innerText = '?';
+            document.getElementById('mediaBox').innerHTML = `<img src="phway.jpg" alt="ဖွေးဖွေး">`;
         }
 
-        function setMode(m) { mode = m; document.getElementById('cardInner').classList.remove('flipped'); }
+        function setMode(m) { mode = m; restartGame(); }
 
         function drawCard() {
-            let pool = levelsData[mode];
-            currentTarget = pool[Math.floor(Math.random() * pool.length)];
-            
-            document.getElementById('cardContent').innerText = currentTarget;
-            document.getElementById('cardInner').classList.add('flipped');
-            
-            setTimeout(() => speakVoice(currentTarget), 500);
+            playSfx('draw');
+            document.getElementById('cardInner').classList.remove('flipped');
+            setTimeout(() => {
+                let pool = levelsData[mode];
+                currentTarget = pool[Math.floor(Math.random() * pool.length)];
+                document.getElementById('cardContent').innerText = currentTarget;
+                document.getElementById('cardInner').classList.add('flipped');
+                setTimeout(() => speakVoice(currentTarget), 500);
+            }, 50);
         }
 
         function assess(isCorrect) {
             if (isCorrect) {
                 stars++;
                 document.getElementById('starCount').innerText = `⭐ ကြယ်: ${stars}`;
-                playCheer();
+                playSfx('cheer');
                 speakVoice("ဖွေးဖွေးလေးကတောိလိုက်တာ");
                 document.getElementById('mediaBox').innerHTML = `<video src="dance.mp4" autoplay loop muted playsinline></video>`;
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             } else {
                 wrongCount++;
+                playSfx('wrong');
                 let msg = wrongCount >= 3 ? "ဖွေးဖွေးမှားပဲမှားနေတာ စိတ်တိုလာပြီနော်" : "ဖွေးဖွေးမှားနေပြီနော်";
                 speakVoice(msg);
                 document.getElementById('mediaBox').innerHTML = `<img src="worng1.jpg" alt="Wrong">`;
