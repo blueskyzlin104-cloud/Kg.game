@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🎈 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်းကမ္ဘာ 🦄</title>
-    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Padauk:wght@700&display=swap');
@@ -56,7 +55,6 @@
             display: none; z-index: 30; border: 2px solid #fdcb6e;
         }
 
-        /* 🎙️ Mic Listening Status Indicator */
         .mic-status {
             background: #e74c3c; color: white; padding: 4px 12px; border-radius: 20px;
             font-size: 12px; font-weight: bold; display: none; animation: pulse 1.5s infinite;
@@ -64,7 +62,6 @@
         }
         @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
-        /* 🎥 Character Frame */
         .character-box {
             width: 88vw; height: 32vh; max-width: 380px; max-height: 240px;
             border-radius: 25px; overflow: hidden; position: relative;
@@ -83,7 +80,6 @@
             pointer-events: none; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
 
-        /* 🃏 3D Card Flip */
         .card-container { perspective: 1000px; width: 85vw; height: 18vh; max-width: 360px; max-height: 140px; cursor: pointer; }
         .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.5s; transform-style: preserve-3d; }
         .card-inner.flipped { transform: rotateY(180deg); }
@@ -103,7 +99,6 @@
         .btn-yes { background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
         .btn-no { background: #ff7675; box-shadow: 0 4px 0 #d63031; }
 
-        /* 🏆 Modals */
         .modal {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0,0,0,0.75); display: none; flex-direction: column;
@@ -158,7 +153,6 @@
         </div>
     </div>
 
-    <!-- 🏆 Trophy Modal -->
     <div class="modal" id="trophyModal">
         <div class="modal-card">
             <div class="modal-title" id="trophyTitle">Level Up!</div>
@@ -168,7 +162,6 @@
         </div>
     </div>
 
-    <!-- 🧩 Sticker Book Modal -->
     <div class="modal" id="stickerModal">
         <div class="modal-card">
             <div class="modal-title">🧩 စတစ်ကာ စာအုပ်</div>
@@ -214,7 +207,6 @@
 
         function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
 
-        /* 🔊 အသံ Sound Effects (Fanfare & Idol Buzzer) */
         function playSfx(type) {
             initAudio(); if (!audioCtx) return;
             let now = audioCtx.currentTime;
@@ -249,7 +241,6 @@
             }
         }
 
-        /* 🎙️ မြန်မာအသံ ပီပီသသ ထွက်ပေးသည့်စနစ် */
         function playMyanmarWishSound(text) {
             if (!text) return;
             window.speechSynthesis.cancel();
@@ -261,7 +252,6 @@
 
         function speakCardContent() { if (currentItem) playMyanmarWishSound(currentItem.p); }
 
-        /* 🎤 Auto Speech Recognition (ကလေးဖတ်တာ နားထောင်ပေးသည့်စနစ်) */
         function initSpeechRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return;
@@ -278,7 +268,6 @@
             recognition.onresult = function(event) {
                 stopListening();
                 let spokenText = event.results[0][0].transcript.toLowerCase().trim();
-                console.log("Spoken:", spokenText);
 
                 if (currentItem && currentItem.alt) {
                     let isMatched = currentItem.alt.some(word => spokenText.includes(word.toLowerCase()));
@@ -327,7 +316,6 @@
                 document.getElementById('cardContent').innerText = currentItem.c;
                 cardInner.classList.add('flipped');
 
-                // 🎙️ စာလုံးပေါ်လာသည်နှင့် အလိုအလျောက် မိုက်ဖွင့် နားထောင်ပါမည်
                 setTimeout(() => { startListening(); }, 500);
             }, 150);
         }
