@@ -6,8 +6,6 @@
     <title>🎈 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်းကမ္ဘာ 🦄</title>
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <!-- ResponsiveVoice TTS Engine -->
-    <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Padauk:wght@700&display=swap');
@@ -155,7 +153,7 @@
         .btn-no { background: #ff7675; box-shadow: 0 4px 0 #d63031; }
     </style>
 </head>
-<body onclick="enableAudio()">
+<body>
 
     <div class="bubble" style="left: 10%; width: 40px; height: 40px; animation-duration: 7s;"></div>
     <div class="bubble" style="left: 30%; width: 25px; height: 25px; animation-duration: 5s;"></div>
@@ -211,52 +209,49 @@
         let currentTarget = '';
         let wrongCount = 0;
         let wrongToggle = false;
-        let isAudioUnlocked = false;
+        let currentAudio = null;
 
         const card = document.getElementById('card');
         const mediaBox = document.getElementById('mediaBox');
         const starCount = document.getElementById('starCount');
         const speech = document.getElementById('speechBubble');
 
-        // Browser Audio Unlocking
-        function enableAudio() {
-            if (!isAudioUnlocked) {
-                if (window.responsiveVoice) {
-                    responsiveVoice.speak("", "US English Female");
-                }
-                isAudioUnlocked = true;
-            }
-        }
-
-        // 🔊 Robust Female Speech Engine
-        function speakVoice(text, pitchVal = 1.2, rateVal = 0.9) {
+        // 🔊 မြန်မာရော၊ အင်္ဂလိပ်ရော ၁၀၀% အသံထွက်စေမည့် Audio Engine
+        function playGoogleVoice(text) {
             if(!text || text === '?') return;
 
-            // Method 1: ResponsiveVoice SDK
-            if (window.responsiveVoice) {
-                responsiveVoice.cancel();
-                const selectedVoice = (mode === 'english') ? "US English Female" : "Thai Female";
-                responsiveVoice.speak(text, selectedVoice, { pitch: pitchVal, rate: rateVal });
-                return;
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
             }
 
-            // Method 2: Web Speech API (Fallback)
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const ut = new SpeechSynthesisUtterance(text);
-                ut.lang = mode === 'english' ? 'en-US' : 'my-MM';
-                ut.pitch = pitchVal;
-                ut.rate = rateVal;
-                window.speechSynthesis.speak(ut);
+            // အင်္ဂလိပ်စာဖြစ်ပါက 'en'၊ မြန်မာစာ/ဂဏန်းဖြစ်ပါက 'my' ဖြင့် ဖတ်မည်
+            const lang = (mode === 'english') ? 'en' : 'my';
+            
+            // Cors Proxy ဖြင့် Google TTS audio ကို တိုက်ရိုက်ခေါ်ယူသည်
+            const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${lang}&client=tw-ob`;
+            
+            currentAudio = new Audio(audioUrl);
+            
+            let playPromise = currentAudio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // Fallback
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        const ut = new SpeechSynthesisUtterance(text);
+                        ut.lang = lang === 'en' ? 'en-US' : 'my-MM';
+                        window.speechSynthesis.speak(ut);
+                    }
+                });
             }
         }
 
         function speakText(text) {
-            speakVoice(text, 1.1, 0.85);
+            playGoogleVoice(text);
         }
 
         function assess(isCorrect) {
-            enableAudio();
             speech.style.display = 'none';
 
             if (isCorrect) {
@@ -264,9 +259,9 @@
                 stars += 1;
                 starCount.innerText = `⭐ ကြယ်: ${stars}`;
                 
-                const msg = "ဖွေးဖွေးလေးက တော်လိုက်တာ";
+                const msg = "ဖွေးဖွေးလေးကတောိလိုက်တာ";
                 showSpeech(`💃 ${msg}! 🎉`);
-                speakVoice(msg, 1.3, 0.9);
+                playGoogleVoice(msg);
 
                 mediaBox.innerHTML = `<video src="dance.mp4" autoplay loop muted playsinline></video>`;
                 if (typeof confetti === 'function') confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
@@ -276,14 +271,13 @@
                 let msg = "";
 
                 if (wrongCount >= 3) {
-                    msg = "ဖွေးဖွေး မှားပဲ မှားနေတာ စိတ်တိုလာပြီနော်";
-                    speakVoice(msg, 0.7, 1.0);
+                    msg = "ဖွေးဖွေးမှားပဲမှားနေတာ စိတ်တိုလာပြီနော်";
                 } else {
-                    msg = "ဖွေးဖွေး မှားနေပြီနော်";
-                    speakVoice(msg, 1.0, 0.9);
+                    msg = "ဖွေးဖွေးမှားနေပြီနော်";
                 }
 
                 showSpeech(`😭 ${msg}`);
+                playGoogleVoice(msg);
 
                 wrongToggle = !wrongToggle;
                 const imgName = wrongToggle ? 'worng1.jpg' : 'worng2.jpg';
@@ -292,7 +286,6 @@
         }
 
         function drawCard() {
-            enableAudio();
             card.classList.remove('roll-anim');
             void card.offsetWidth;
             card.classList.add('roll-anim');
