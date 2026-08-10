@@ -322,47 +322,49 @@
         }
 
         function assess(isCorrect) {
-            stopListening();
-            document.getElementById('speechBubble').style.display = 'none';
+    stopListening();
+    document.getElementById('speechBubble').style.display = 'none';
 
-            if (isCorrect) {
-                wrongCount = 0; stars += 1;
-                document.getElementById('starCount').innerText = `⭐ ${stars}`;
-                playSfx('correct');
+    if (isCorrect) {
+        wrongCount = 0; 
+        stars += 1;
+        document.getElementById('starCount').innerText = `⭐ ${stars}`;
 
-                const phonics = currentItem ? currentItem.p : "";
-                showSpeech(`💃 ${phonics}! 🎉`);
-                setTimeout(() => { 
-                    playMyanmarWishSound(`${phonics} ... ဖွေးဖွေးလေးကတော်လိုက်တာ`); 
-                }, 400);
+        // 🎵 မှန်ရင် correct.mp3 ကို ဖွင့်ပါမည်
+        let correctAudio = new Audio('correct.mp3');
+        correctAudio.play();
 
-                document.getElementById('mediaBox').querySelector('img')?.remove();
-                document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><video src="dance.mp4" autoplay loop muted playsinline></video>`;
-                if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+        const phonics = currentItem ? currentItem.p : "";
+        showSpeech(`💃 ${phonics}! 🎉`);
 
-                if (stars % 10 === 0) {
-                    let st = stickerList[(stars / 10 - 1) % stickerList.length];
-                    if (!unlockedStickers.includes(st)) unlockedStickers.push(st);
-                    showSpeech(`🎁 စတစ်ကာသစ် ရပြီ: ${st}`);
-                }
+        document.getElementById('mediaBox').querySelector('img')?.remove();
+        document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><video src="dance.mp4" autoplay loop muted playsinline></video>`;
+        
+        if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
 
-                checkLevelUp();
-
-            } else {
-                wrongCount += 1;
-                playSfx('wrong');
-
-                let phonics = currentItem ? currentItem.p : "";
-                let msg = wrongCount >= 3 ? "ဖွေးဖွေးမှားပဲမှားနေတာ စိတ်တိုလာပြီနော်" : "ဖွေးဖွေးမှားနေပြီနော်";
-                showSpeech(`😭 ${msg}`);
-                
-                setTimeout(() => { 
-                    playMyanmarWishSound(`ဒီစာလုံးလေးက ${phonics} ပါ ... ${msg}`); 
-                }, 450);
-                
-                document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="worng1.jpg" alt="Wrong">`;
-            }
+        if (stars % 10 === 0) {
+            let st = stickerList[(stars / 10 - 1) % stickerList.length];
+            if (!unlockedStickers.includes(st)) unlockedStickers.push(st);
+            showSpeech(`🎁 စတစ်ကာသစ် ရပြီ: ${st}`);
         }
+
+        checkLevelUp();
+
+    } else {
+        wrongCount += 1;
+
+        // 🎵 မှားသွားရင် worng.mp3 သို့မဟုတ် ၃ ကြိမ်ထက်ပိုမှားရင် double worng.mp3 ကို ဖွင့်ပါမည်
+        let wrongAudio = (wrongCount >= 3) ? new Audio('double worng.mp3') : new Audio('worng.mp3');
+        wrongAudio.play();
+
+        let phonics = currentItem ? currentItem.p : "";
+        let msg = wrongCount >= 3 ? "ဖွေးဖွေးမှားပဲမှားနေတာ စိတ်တိုလာပြီနော်" : "ဖွေးဖွေးမှားနေပြီနော်";
+        showSpeech(`😭 ${msg}`);
+        
+        document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="worng1.jpg" alt="Wrong">`;
+    }
+}
+
 
         function checkLevelUp() {
             let newLevel = Math.floor(stars / 50) + 1;
