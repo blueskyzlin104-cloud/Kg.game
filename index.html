@@ -108,7 +108,8 @@
         .modal-title { font-size: 20px; color: #d35400; font-weight: bold; }
         .sticker-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; font-size: 35px; }
         .btn-close { background: #2ecc71; color: white; border: none; padding: 8px 20px; font-size: 16px; font-weight: bold; border-radius: 15px; cursor: pointer; }
-          /* --- ပူပေါင်း ဂိမ်းအတွက် Style အသစ် --- */
+
+        /* --- ပူပေါင်း ဂိမ်းအတွက် Style --- */
         .balloon {
             position: absolute; width: 65px; height: 80px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -116,11 +117,11 @@
             box-shadow: inset -5px -5px 10px rgba(0,0,0,0.15);
         }
         @keyframes floatUp { 0% { bottom: -100px; } 100% { bottom: 105vh; } }
-  </style>
+    </style>
 </head>
 <body>
 
-    <!-- --- Gift Box Modal အသစ် --- -->
+    <!-- Gift Box Modal -->
     <div class="modal" id="giftModal">
         <div class="modal-card">
             <div class="modal-title">🎁 လက်ဆောင်ပုံး ပွင့်သွားပြီ!</div>
@@ -130,7 +131,7 @@
         </div>
     </div>
 
-    <!-- --- Balloon Game Modal အသစ် --- -->
+    <!-- Balloon Game Modal -->
     <div class="modal" id="balloonModal" style="background: rgba(0, 184, 255, 0.85);">
         <div style="color:white; text-align:center; margin-top: 20px;">
             <h2>🎈 ပူပေါင်းလေးတွေ ဖောက်မယ်! 🎈</h2>
@@ -139,6 +140,7 @@
         <div id="balloonArea" style="width:100vw; height:75vh; position:relative; overflow:hidden;"></div>
         <button class="btn-close" onclick="closeBalloonGame()">စာပြန်သင်မယ် 🚀</button>
     </div>
+
     <div class="top-nav">
         <h1 class="title-text">🎈 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်းကမ္ဘာ 🦄</h1>
         <div class="status-box">
@@ -198,136 +200,7 @@
     </div>
 
     <script>
-     
-   const levelsData = {
-            myanmar: {
-                1: [ { c: "က", p: "က - ကလေးလေး 👶", alt: ["က", "ကလေး", "ကလေးလေး"] }, { c: "ခ", p: "ခ - ခွေးလေး 🐶", alt: ["ခ", "ခွေး", "ခွေးလေး"] }, { c: "ဂ", p: "ဂ - ဂဏန်း 🦀", alt: ["ဂ", "ဂဏန်း"] }, { c: "ဃ", p: "ဃ - ဃေါင်း 🦚", alt: ["ဃ", "ဒေါင်း"] }, { c: "င", p: "င - ငါးလေး 🐟", alt: ["င", "ငါး", "ငါးလေး"] } ],
-                2: [ { c: "စ", p: "စ - စာကလေး 🐦", alt: ["စ", "စာကလေး"] }, { c: "ဆ", p: "ဆ - ဆင်ကြီး 🐘", alt: ["ဆ", "ဆင်"] }, { c: "ဇ", p: "ဇ - ဇွန်း 🥄", alt: ["ဇ", "ဇွန်း"] }, { c: "ဈ", p: "ဈ - ဈေး 🛒", alt: ["ဈ", "ဈေး"] }, { c: "ည", p: "ည - ညောင်ပင် 🌳", alt: ["ည", "ညောင်ပင်"] } ],
-                3: [ { c: "တ", p: "တ - တံခါး 🚪", alt: ["တ", "တံခါး"] }, { c: "ထ", p: "ထ - ထီး ☂️", alt: ["ထ", "ထီး"] }, { c: "ဒ", p: "ဒ - ဒိုက် 🦆", alt: ["ဒ", "ဒိုက်", "ဘဲ"] }, { c: "ဓ", p: "ဓ - ဓား 🔪", alt: ["ဓ", "ဓား"] }, { c: "န", p: "န - နွား 🐮", alt: ["န", "နွား"] } ],
-                4: [ { c: "ပ", p: "ပ - ပန်းသီး 🍎", alt: ["ပ", "ပန်းသီး"] }, { c: "ဖ", p: "ဖ - ဖယောင်းတိုင် 🕯️", alt: ["ဖ", "ဖယောင်းတိုင်"] }, { c: "ဗ", p: "ဗ - ဗုံ 🥁", alt: ["ဗ", "ဗုံ"] }, { c: "ဘ", p: "ဘ - ဘောလုံး ⚽", alt: ["ဘ", "ဘောလုံး"] }, { c: "မ", p: "မ - ကြောင် 🐱", alt: ["မ", "ကြောင်"] } ],
-                5: [ { c: "ယ", p: "ယ - ယုန် 🐰", alt: ["ယ", "ယုန်"] }, { c: "ရ", p: "ရ - ရထား 🚆", alt: ["ရ", "ရထား"] }, { c: "လ", p: "လ - လမင်း 🌙", alt: ["လ", "လမင်း"] }, { c: "ဝ", p: "ဝ - ဝက် 🐷", alt: ["ဝ", "ဝက်"] }, { c: "သ", p: "သ - သရက်သီး 🥭", alt: ["သ", "သရက်သီး"] } ]
-            },
-            english: {
-                1: [ { c: "A", p: "A for Apple 🍎", alt: ["a", "apple"] }, { c: "B", p: "B for Ball ⚽", alt: ["b", "ball"] }, { c: "C", p: "C for Cat 🐱", alt: ["c", "cat"] }, { c: "D", p: "D for Dog 🐶", alt: ["d", "dog"] }, { c: "E", p: "E for Elephant 🐘", alt: ["e", "elephant"] } ],
-                2: [ { c: "F", p: "F for Fish 🐟", alt: ["f", "fish"] }, { c: "G", p: "G for Grapes 🍇", alt: ["g", "grapes"] }, { c: "H", p: "H for Hat 🎩", alt: ["h", "hat"] }, { c: "I", p: "I for Ice Cream 🍦", alt: ["i", "ice cream"] }, { c: "J", p: "J for Juice 🧃", alt: ["j", "juice"] } ],
-                3: [ { c: "K", p: "K for Kite 🪁", alt: ["k", "kite"] }, { c: "L", p: "L for Lion 🦁", alt: ["l", "lion"] }, { c: "M", p: "M for Monkey 🐒", alt: ["m", "monkey"] }, { c: "N", p: "N for Nest 🪺", alt: ["n", "nest"] }, { c: "O", p: "O for Orange 🍊", alt: ["o", "orange"] } ],
-                4: [ { c: "P", p: "P for Panda 🐼", alt: ["p", "panda"] }, { c: "Q", p: "Q for Queen 👑", alt: ["q", "queen"] }, { c: "R", p: "R for Rabbit 🐰", alt: ["r", "rabbit"] }, { c: "S", p: "S for Sun ☀️", alt: ["s", "sun"] }, { c: "T", p: "T for Tiger 🐯", alt: ["t", "tiger"] } ],
-                5: [ { c: "U", p: "U for Umbrella ☂️", alt: ["u", "umbrella"] }, { c: "V", p: "V for Van 🚐", alt: ["v", "van"] }, { c: "W", p: "W for Watermelon 🍉", alt: ["w", "watermelon"] }, { c: "X", p: "X for Xylophone 🎼", alt: ["x", "xylophone"] }, { c: "Y", p: "Y for Yo-Yo 🪀", alt: ["y", "yo-yo"] }, { c: "Z", p: "Z for Zebra 🦓", alt: ["z", "zebra"] } ]
-            },
-            numbers: {
-                1: [ { c: "၁", p: "၁ - တစ် 1️⃣", alt: ["၁", "တစ်", "1", "one"] }, { c: "၂", p: "၂ - နှစ် 2️⃣", alt: ["၂", "နှစ်", "2", "two"] }, { c: "၃", p: "၃ - သုံး 3️⃣", alt: ["၃", "သုံး", "3", "three"] }, { c: "၄", p: "၄ - လေး 4️⃣", alt: ["၄", "လေး", "4", "four"] }, { c: "၅", p: "၅ - ငါး 5️⃣", alt: ["၅", "ငါး", "5", "five"] } ],
-                2: [ { c: "၆", p: "၆ - ခြောက် 6️⃣", alt: ["၆", "ခြောက်", "6"] }, { c: "၇", p: "၇ - ခုနစ် 7️⃣", alt: ["၇", "ခုနစ်", "7"] }, { c: "၈", p: "၈ - ရှစ် 8️⃣", alt: ["၈", "ရှစ်", "8"] }, { c: "၉", p: "၉ - ကိုး 9️⃣", alt: ["၉", "ကိုး", "9"] }, { c: "၁၀", p: "၁၀ - တစ်ဆယ် 🔟", alt: ["၁၀", "တစ်ဆယ်", "10"] } ],
-                3: [ { c: "1", p: "One 1️⃣", alt: ["1", "one"] }, { c: "2", p: "Two 2️⃣", alt: ["2", "two"] }, { c: "3", p: "Three 3️⃣", alt: ["3", "three"] }, { c: "4", p: "Four 4️⃣", alt: ["4", "four"] }, { c: "5", p: "Five 5️⃣", alt: ["5", "five"] } ],
-                4: [ { c: "6", p: "Six 6️⃣", alt: ["6", "six"] }, { c: "7", p: "Seven 7️⃣", alt: ["7", "seven"] }, { c: "8", p: "Eight 8️⃣", alt: ["8", "eight"] }, { c: "9", p: "Nine 9️⃣", alt: ["9", "nine"] }, { c: "10", p: "Ten 🔟", alt: ["10", "ten"] } ],
-                5: [ { c: "20", p: "Twenty 2️⃣0️⃣", alt: ["20", "twenty"] }, { c: "30", p: "Thirty 3️⃣0️⃣", alt: ["30", "thirty"] } ]
-            }
-        };
-
-        const accessories = ["", "👑", "🧙‍♀️", "👓", "🎀", "🦄"];
-        const stickerList = ["🦄", "🌟", "🐥", "🐰", "🎈", "🍭", "🎨", "👑", "🦋", "🍩", "🌸", "🍕"];
-
-        let mode = 'myanmar';
-        let level = 1, stars = 0, currentItem = null, wrongCount = 0;
-        let accIndex = 0, unlockedStickers = [];
-        let audioCtx = null;
-        let recognition = null;
-        let isListening = false;
-
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-
-        function playSfx(type) {
-            initAudio(); if (!audioCtx) return;
-            let now = audioCtx.currentTime;
-
-            if (type === 'draw') {
-                let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
-                gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
-                osc.start(now); osc.stop(now + 0.1);
-
-            } else if (type === 'correct') {
-                const notes = [523.25, 659.25, 783.99, 1046.50];
-                notes.forEach((freq, idx) => {
-                    let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-                    gain.gain.setValueAtTime(0.3, now + idx * 0.08);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
-                    osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.start(now + idx * 0.08); osc.stop(now + idx * 0.08 + 0.3);
-                });
-
-            } else if (type === 'wrong') {
-                let osc1 = audioCtx.createOscillator(), osc2 = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc1.type = 'sawtooth'; osc2.type = 'sawtooth';
-                osc1.frequency.setValueAtTime(130, now); osc2.frequency.setValueAtTime(1385, now);
-                gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.45);
-                osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination);
-                osc1.start(now); osc2.start(now); osc1.stop(now + 0.45); osc2.stop(now + 0.45);
-            }
-        }
-
-        function playMyanmarWishSound(text) {
-            if (!text) return;
-            window.speechSynthesis.cancel();
-            const ut = new SpeechSynthesisUtterance(text);
-            ut.lang = mode === 'english' ? 'en-US' : 'my-MM'; 
-            ut.pitch = 1.1; ut.rate = 0.5
-            ;
-            window.speechSynthesis.speak(ut);
-        }
-
-        function speakCardContent() { if (currentItem) playMyanmarWishSound(currentItem.p); }
-
-        function initSpeechRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return;
-            recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.interimResults = false;
-
-            recognition.onstart = function() {
-                isListening = true;
-                document.getElementById('micStatus').style.display = 'block';
-            };
-
-            recognition.onresult = function(event) {
-                stopListening();
-                let spokenText = event.results[0][0].transcript.toLowerCase().trim();
-
-                if (currentItem && currentItem.alt) {
-                    let isMatched = currentItem.alt.some(word => spokenText.includes(word.toLowerCase()));
-                    if (isMatched) {
-                        assess(true);
-                    } else {
-                        assess(false);
-                    }
-                }
-            };
-
-            recognition.onerror = function() { stopListening(); };
-            recognition.onend = function() { stopListening(); };
-        }
-
-        function startListening() {
-            if (!recognition) initSpeechRecognition();
-            if (recognition && !isListening) {
-                try {
-                    recognition.lang = mode === 'english' ? 'en-US' : 'my-MM';
-                    recognition.start();
-                } catch(e) {}
-            }
-        }
-
-        function stopListening() {
-            isListening = false;
-            document.getElementById('micStatus').style.display = 'none';
-            if (recognition) recognition.stop();
-        }
-
-         const levelsData = {
+        const levelsData = {
             myanmar: {
                 1: [ { c: "က", p: "က - ကလေးလေး 👶", alt: ["က", "ကလေး", "ကလေးလေး"] }, { c: "ခ", p: "ခ - ခွေးလေး 🐶", alt: ["ခ", "ခွေး", "ခွေးလေး"] }, { c: "ဂ", p: "ဂ - ဂဏန်း 🦀", alt: ["ဂ", "ဂဏန်း"] }, { c: "ဃ", p: "ဃ - ဒေါင်း 🦚", alt: ["ဃ", "ဒေါင်း"] }, { c: "င", p: "င - ငါးလေး 🐟", alt: ["င", "ငါး", "ငါးလေး"] } ],
                 2: [ { c: "စ", p: "စ - စာကလေး 🐦", alt: ["စ", "စာကလေး"] }, { c: "ဆ", p: "ဆ - ဆင်ကြီး 🐘", alt: ["ဆ", "ဆင်"] }, { c: "ဇ", p: "ဇ - ဇွန်း 🥄", alt: ["ဇ", "ဇွန်း"] }, { c: "ဈ", p: "ဈ - ဈေး 🛒", alt: ["ဈ", "ဈေး"] }, { c: "ည", p: "ည - ညောင်ပင် 🌳", alt: ["ည", "ညောင်ပင်"] } ]
@@ -341,13 +214,13 @@
         };
 
         const accessories = ["", "👑", "🧙‍♀️", "👓", "🎀", "🦄"];
-        const stickerList = ["🦄", "🌟", "🐥", "🐰", "🎈", "🍭", "🎨", "👑"];
+        const stickerList = ["🦄", "🌟", "🐥", "🐰", "🎈", "🍭", "🎨", "👑", "🦋", "🍩", "🌸", "🍕"];
 
         let mode = 'myanmar';
         let level = 1, stars = 0, currentItem = null, wrongCount = 0;
         let accIndex = 0, unlockedStickers = [];
         let recognition = null, isListening = false;
-        let correctInARow = 0; // ပူပေါင်းဂိမ်းအတွက် ရေတွက်ရန်
+        let correctInARow = 0;
 
         function playMyanmarWishSound(text) {
             if (!text) return;
@@ -411,11 +284,9 @@
                 const phonics = currentItem ? currentItem.p : "";
                 showSpeech(`💃 ${phonics}! 🎉`);
                 
-                // 🎁 Gift Box Logic (ကြယ် ၂၀ ပြည့်တိုင်း)
                 if (stars > 0 && stars % 20 === 0) {
                     setTimeout(() => { document.getElementById('giftModal').style.display = 'flex'; }, 1000);
                 }
-                // 🎈 Balloon Game Logic (၁၀ ခေါက်မှန်တိုင်း)
                 if (correctInARow >= 10) {
                     setTimeout(() => { startBalloonGame(); correctInARow = 0; }, 1200);
                 }
@@ -443,33 +314,42 @@
             }
         }
 
+        function openStickerBook() {
+            const grid = document.getElementById('stickerGrid');
+            grid.innerHTML = '';
+            stickerList.forEach((s, idx) => {
+                let item = document.createElement('div');
+                item.innerText = (idx < stars) ? s : '🔒';
+                grid.appendChild(item);
+            });
+            document.getElementById('stickerModal').style.display = 'flex';
+        }
+
         function closeBalloonGame() { document.getElementById('balloonModal').style.display = 'none'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function showSpeech(text) { const speech = document.getElementById('speechBubble'); speech.innerText = text; speech.style.display = 'block'; }
         function setMode(m) { mode = m; stars = 0; document.getElementById('starCount').innerText = `⭐ 0`; }
-function restartGame() {
-    stopListening();
-    stars = 0;
-    level = 1;
-    wrongCount = 0;
-    correctInARow = 0;
-    currentItem = null;
-    unlockedStickers = [];
-    
-    // UI တွေကို ပြန်ပြင်ခြင်း
-    document.getElementById('starCount').innerText = `⭐ 0`;
-    document.getElementById('levelText').innerText = `🏆 Level: 1`;
-    document.getElementById('cardInner').classList.remove('flipped');
-    document.getElementById('cardContent').innerText = '?';
-    document.getElementById('speechBubble').style.display = 'none';
-    
-    // ပုံကို မူလအတိုင်း ပြန်ပြင်ခြင်း
-    document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="phway.jpg" alt="ဖွေးဖွေး">`;
-    
-    // Modal တွေ အကုန်ပိတ်ခြင်း
-    document.getElementById('giftModal').style.display = 'none';
-    document.getElementById('balloonModal').style.display = 'none';
-}
-   </script>
+
+        function restartGame() {
+            stopListening();
+            stars = 0;
+            level = 1;
+            wrongCount = 0;
+            correctInARow = 0;
+            currentItem = null;
+            unlockedStickers = [];
+            
+            document.getElementById('starCount').innerText = `⭐ 0`;
+            document.getElementById('levelText').innerText = `🏆 Level: 1`;
+            document.getElementById('cardInner').classList.remove('flipped');
+            document.getElementById('cardContent').innerText = '?';
+            document.getElementById('speechBubble').style.display = 'none';
+            
+            document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="phway.jpg" alt="ဖွေးဖွေး">`;
+            
+            document.getElementById('giftModal').style.display = 'none';
+            document.getElementById('balloonModal').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
