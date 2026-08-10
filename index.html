@@ -120,11 +120,6 @@
 </head>
 <body>
 
-    <!-- Audio Elements (GitHub ထဲက ဖိုင်အမည်များအတိုင်း) -->
-    <audio id="sndCorrect" src="correct.mp3" preload="auto"></audio>
-    <audio id="sndWrong" src="worng.mp3" preload="auto"></audio>
-    <audio id="sndDoubleWrong" src="double worng.mp3" preload="auto"></audio>
-
     <!-- Gift Box Modal -->
     <div class="modal" id="giftModal">
         <div class="modal-card">
@@ -226,23 +221,21 @@
         let recognition = null, isListening = false;
         let correctInARow = 0;
 
-        // --- အသံဖွင့်သည့် စနစ် ---
-        function playAudio(id) {
+        // --- Sound Player (Audio Object စနစ်ဖြင့် တိုက်ရိုက်ဖတ်ရန်) ---
+        function playFileAudio(fileName) {
             try {
-                let audio = document.getElementById(id);
-                if (audio) {
-                    audio.currentTime = 0;
-                    audio.play().catch(e => console.log("Audio play blocked by browser"));
-                }
+                let audio = new Audio(fileName);
+                audio.play().catch(e => console.log("Audio play error:", e));
             } catch(e) {}
         }
 
+        // --- ဖွေးဖွေးရဲ့ စာဖတ်သံ (Web Speech API) ---
         function playMyanmarWishSound(text) {
             if (!text) return;
             window.speechSynthesis.cancel();
             const ut = new SpeechSynthesisUtterance(text);
             ut.lang = mode === 'english' ? 'en-US' : 'my-MM'; 
-            ut.pitch = 1.1; ut.rate = 0.65;
+            ut.pitch = 1.2; ut.rate = 0.7;
             window.speechSynthesis.speak(ut);
         }
 
@@ -279,7 +272,7 @@
         function drawCard() {
             stopListening();
 
-            // မူလပုံ (phway.jpg) ပြန်ပြောင်းရန်
+            // ပင်မပုံ (phway.jpg) သို့ ပြန်ပြောင်းမည်
             document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="phway.jpg" alt="ဖွေးဖွေး">`;
 
             const cardInner = document.getElementById('cardInner');
@@ -289,6 +282,10 @@
                 currentItem = pool[Math.floor(Math.random() * pool.length)];
                 document.getElementById('cardContent').innerText = currentItem.c;
                 cardInner.classList.add('flipped');
+                
+                // ကတ်လှန်ပြီးတာနဲ့ ဖွေးဖွေးအသံ ထွက်အောင်လုပ်ပေးခြင်း
+                speakCardContent();
+
                 setTimeout(() => { startListening(); }, 500);
             }, 150);
         }
@@ -303,9 +300,9 @@
                 document.getElementById('starCount').innerText = `⭐ ${stars}`;
                 
                 // correct.mp3 အသံဖွင့်မည်
-                playAudio('sndCorrect');
+                playFileAudio('correct.mp3');
 
-                // dance.mp4 ဗီဒီယို ပြောင်းပြမည်
+                // dance.mp4 ဗီဒီယို ပြောင်းမည်
                 document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><video src="dance.mp4" autoplay loop muted playsinline></video>`;
 
                 const phonics = currentItem ? currentItem.p : "";
@@ -321,12 +318,12 @@
                 wrongCount += 1; correctInARow = 0;
                 
                 if (wrongCount >= 2) {
-                    // ၂ ကြိမ်ဆက်မှားရင် double worng.mp3 နဲ့ worng2.jpg ပေါ်မည်
-                    playAudio('sndDoubleWrong');
+                    // ၂ ကြိမ်ဆက်မှားလျှင် double worng.mp3 အသံနှင့် worng2.jpg ပုံပြောင်းမည်
+                    playFileAudio('double worng.mp3');
                     document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="worng2.jpg" alt="မှားသည်">`;
                 } else {
-                    // ၁ ကြိမ်မှားရင် worng.mp3 နဲ့ worng1.jpg ပေါ်မည်
-                    playAudio('sndWrong');
+                    // ၁ ကြိမ်မှားလျှင် worng.mp3 အသံနှင့် worng1.jpg ပုံပြောင်းမည်
+                    playFileAudio('worng.mp3');
                     document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="worng1.jpg" alt="မှားသည်">`;
                 }
 
