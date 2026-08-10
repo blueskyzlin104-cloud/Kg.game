@@ -108,10 +108,37 @@
         .modal-title { font-size: 20px; color: #d35400; font-weight: bold; }
         .sticker-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; font-size: 35px; }
         .btn-close { background: #2ecc71; color: white; border: none; padding: 8px 20px; font-size: 16px; font-weight: bold; border-radius: 15px; cursor: pointer; }
-    </style>
+          /* --- ပူပေါင်း ဂိမ်းအတွက် Style အသစ် --- */
+        .balloon {
+            position: absolute; width: 65px; height: 80px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; animation: floatUp 3.5s linear forwards; font-size: 24px;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.15);
+        }
+        @keyframes floatUp { 0% { bottom: -100px; } 100% { bottom: 105vh; } }
+  </style>
 </head>
 <body>
 
+    <!-- --- Gift Box Modal အသစ် --- -->
+    <div class="modal" id="giftModal">
+        <div class="modal-card">
+            <div class="modal-title">🎁 လက်ဆောင်ပုံး ပွင့်သွားပြီ!</div>
+            <div style="font-size: 80px; margin: 15px 0;">🎉</div>
+            <p style="font-size: 14px; margin-bottom: 15px;">ဝိုး... ဖွေးဖွေးလေး တော်လိုက်တာ! လက်ဆောင် စတစ်ကာ ရရှိလိုက်ပါပြီ ✨</p>
+            <button class="btn-close" onclick="closeModal('giftModal')">အိုကေ! 🚀</button>
+        </div>
+    </div>
+
+    <!-- --- Balloon Game Modal အသစ် --- -->
+    <div class="modal" id="balloonModal" style="background: rgba(0, 184, 255, 0.85);">
+        <div style="color:white; text-align:center; margin-top: 20px;">
+            <h2>🎈 ပူပေါင်းလေးတွေ ဖောက်မယ်! 🎈</h2>
+            <p style="font-size: 14px;">ပူပေါင်းတွေကို နှိပ်ပြီး ဖောက်လိုက်ပါ</p>
+        </div>
+        <div id="balloonArea" style="width:100vw; height:75vh; position:relative; overflow:hidden;"></div>
+        <button class="btn-close" onclick="closeBalloonGame()">စာပြန်သင်မယ် 🚀</button>
+    </div>
     <div class="top-nav">
         <h1 class="title-text">🎈 ဖွေးဖွေးလေးရဲ့ စာသင်ဂိမ်းကမ္ဘာ 🦄</h1>
         <div class="status-box">
@@ -171,7 +198,8 @@
     </div>
 
     <script>
-        const levelsData = {
+     
+   const levelsData = {
             myanmar: {
                 1: [ { c: "က", p: "က - ကလေးလေး 👶", alt: ["က", "ကလေး", "ကလေးလေး"] }, { c: "ခ", p: "ခ - ခွေးလေး 🐶", alt: ["ခ", "ခွေး", "ခွေးလေး"] }, { c: "ဂ", p: "ဂ - ဂဏန်း 🦀", alt: ["ဂ", "ဂဏန်း"] }, { c: "ဃ", p: "ဃ - ဃေါင်း 🦚", alt: ["ဃ", "ဒေါင်း"] }, { c: "င", p: "င - ငါးလေး 🐟", alt: ["င", "ငါး", "ငါးလေး"] } ],
                 2: [ { c: "စ", p: "စ - စာကလေး 🐦", alt: ["စ", "စာကလေး"] }, { c: "ဆ", p: "ဆ - ဆင်ကြီး 🐘", alt: ["ဆ", "ဆင်"] }, { c: "ဇ", p: "ဇ - ဇွန်း 🥄", alt: ["ဇ", "ဇွန်း"] }, { c: "ဈ", p: "ဈ - ဈေး 🛒", alt: ["ဈ", "ဈေး"] }, { c: "ည", p: "ည - ညောင်ပင် 🌳", alt: ["ည", "ညောင်ပင်"] } ],
@@ -256,7 +284,6 @@
         function initSpeechRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return;
-
             recognition = new SpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
@@ -300,105 +327,149 @@
             if (recognition) recognition.stop();
         }
 
-        function toggleAcc() {
-            accIndex = (accIndex + 1) % accessories.length;
-            document.getElementById('accOverlay').innerText = accessories[accIndex];
+         const levelsData = {
+            myanmar: {
+                1: [ { c: "က", p: "က - ကလေးလေး 👶", alt: ["က", "ကလေး", "ကလေးလေး"] }, { c: "ခ", p: "ခ - ခွေးလေး 🐶", alt: ["ခ", "ခွေး", "ခွေးလေး"] }, { c: "ဂ", p: "ဂ - ဂဏန်း 🦀", alt: ["ဂ", "ဂဏန်း"] }, { c: "ဃ", p: "ဃ - ဒေါင်း 🦚", alt: ["ဃ", "ဒေါင်း"] }, { c: "င", p: "င - ငါးလေး 🐟", alt: ["င", "ငါး", "ငါးလေး"] } ],
+                2: [ { c: "စ", p: "စ - စာကလေး 🐦", alt: ["စ", "စာကလေး"] }, { c: "ဆ", p: "ဆ - ဆင်ကြီး 🐘", alt: ["ဆ", "ဆင်"] }, { c: "ဇ", p: "ဇ - ဇွန်း 🥄", alt: ["ဇ", "ဇွန်း"] }, { c: "ဈ", p: "ဈ - ဈေး 🛒", alt: ["ဈ", "ဈေး"] }, { c: "ည", p: "ည - ညောင်ပင် 🌳", alt: ["ည", "ညောင်ပင်"] } ]
+            },
+            english: {
+                1: [ { c: "A", p: "A for Apple 🍎", alt: ["a", "apple"] }, { c: "B", p: "B for Ball ⚽", alt: ["b", "ball"] }, { c: "C", p: "C for Cat 🐱", alt: ["c", "cat"] } ]
+            },
+            numbers: {
+                1: [ { c: "၁", p: "၁ - တစ် 1️⃣", alt: ["၁", "တစ်", "1", "one"] }, { c: "၂", p: "၂ - နှစ် 2️⃣", alt: ["၂", "နှစ်", "2", "two"] } ]
+            }
+        };
+
+        const accessories = ["", "👑", "🧙‍♀️", "👓", "🎀", "🦄"];
+        const stickerList = ["🦄", "🌟", "🐥", "🐰", "🎈", "🍭", "🎨", "👑"];
+
+        let mode = 'myanmar';
+        let level = 1, stars = 0, currentItem = null, wrongCount = 0;
+        let accIndex = 0, unlockedStickers = [];
+        let recognition = null, isListening = false;
+        let correctInARow = 0; // ပူပေါင်းဂိမ်းအတွက် ရေတွက်ရန်
+
+        function playMyanmarWishSound(text) {
+            if (!text) return;
+            window.speechSynthesis.cancel();
+            const ut = new SpeechSynthesisUtterance(text);
+            ut.lang = mode === 'english' ? 'en-US' : 'my-MM'; 
+            ut.pitch = 1.1; ut.rate = 0.65;
+            window.speechSynthesis.speak(ut);
         }
+
+        function speakCardContent() { if (currentItem) playMyanmarWishSound(currentItem.p); }
+
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.onstart = function() { isListening = true; document.getElementById('micStatus').style.display = 'block'; };
+            recognition.onresult = function(event) {
+                stopListening();
+                let spokenText = event.results[0][0].transcript.toLowerCase().trim();
+                if (currentItem && currentItem.alt) {
+                    let isMatched = currentItem.alt.some(word => spokenText.includes(word.toLowerCase()));
+                    if (isMatched) { assess(true); } else { assess(false); }
+                }
+            };
+            recognition.onend = function() { stopListening(); };
+        }
+
+        function startListening() {
+            if (!recognition) initSpeechRecognition();
+            if (recognition && !isListening) { try { recognition.lang = mode === 'english' ? 'en-US' : 'my-MM'; recognition.start(); } catch(e) {} }
+        }
+
+        function stopListening() { isListening = false; document.getElementById('micStatus').style.display = 'none'; if (recognition) recognition.stop(); }
+
+        function toggleAcc() { accIndex = (accIndex + 1) % accessories.length; document.getElementById('accOverlay').innerText = accessories[accIndex]; }
 
         function drawCard() {
             stopListening();
-            playSfx('draw');
             const cardInner = document.getElementById('cardInner');
             cardInner.classList.remove('flipped');
-
             setTimeout(() => {
-                const pool = levelsData[mode][level];
+                const pool = levelsData[mode][level] || levelsData[mode][1];
                 currentItem = pool[Math.floor(Math.random() * pool.length)];
                 document.getElementById('cardContent').innerText = currentItem.c;
                 cardInner.classList.add('flipped');
-
                 setTimeout(() => { startListening(); }, 500);
             }, 150);
         }
 
         function assess(isCorrect) {
-    stopListening();
-    document.getElementById('speechBubble').style.display = 'none';
+            stopListening();
+            document.getElementById('speechBubble').style.display = 'none';
 
-    if (isCorrect) {
-        wrongCount = 0; 
-        stars += 1;
-        document.getElementById('starCount').innerText = `⭐ ${stars}`;
-
-        // 🎵 မှန်ရင် correct.mp3 ကို ဖွင့်ပါမည်
-        let correctAudio = new Audio('correct.mp3');
-        correctAudio.play();
-
-        const phonics = currentItem ? currentItem.p : "";
-        showSpeech(`💃 ${phonics}! 🎉`);
-
-        document.getElementById('mediaBox').querySelector('img')?.remove();
-        document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><video src="dance.mp4" autoplay loop muted playsinline></video>`;
-        
-        if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
-
-        if (stars % 10 === 0) {
-            let st = stickerList[(stars / 10 - 1) % stickerList.length];
-            if (!unlockedStickers.includes(st)) unlockedStickers.push(st);
-            showSpeech(`🎁 စတစ်ကာသစ် ရပြီ: ${st}`);
-        }
-
-        checkLevelUp();
-
-    } else {
-        wrongCount += 1;
-
-        // 🎵 မှားသွားရင် worng.mp3 သို့မဟုတ် ၃ ကြိမ်ထက်ပိုမှားရင် double worng.mp3 ကို ဖွင့်ပါမည်
-        let wrongAudio = (wrongCount >= 3) ? new Audio('double worng.mp3') : new Audio('worng.mp3');
-        wrongAudio.play();
-
-        let phonics = currentItem ? currentItem.p : "";
-        let msg = wrongCount >= 3 ? "ဖွေးဖွေးမှားပဲမှားနေတာ စိတ်တိုလာပြီနော်" : "ဖွေးဖွေးမှားနေပြီနော်";
-        showSpeech(`😭 ${msg}`);
-        
-        document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="worng1.jpg" alt="Wrong">`;
-    }
-}
-
-
-        function checkLevelUp() {
-            let newLevel = Math.floor(stars / 50) + 1;
-            if (newLevel > 5) newLevel = 5;
-
-            if (newLevel > level) {
-                level = newLevel;
-                document.getElementById('levelText').innerText = `🏆 Level: ${level}`;
+            if (isCorrect) {
+                wrongCount = 0; stars += 1; correctInARow += 1;
+                document.getElementById('starCount').innerText = `⭐ ${stars}`;
+                new Audio('correct.mp3').play();
+                const phonics = currentItem ? currentItem.p : "";
+                showSpeech(`💃 ${phonics}! 🎉`);
                 
-                let pets = ["", "🐱 ဉာဏ်ကြီးရှင်ကြောင်", "🐰 ဉာဏ်ကြီးရှင်ယုန်", "🦄 ယူနီကွန်း", "🦁 ဉာဏ်ကြီးရှင်ခြင်္သေ့"];
-                document.getElementById('trophyTitle').innerText = `Level ${level} တက်သွားပြီ!`;
-                document.getElementById('trophyIcon').innerText = "🐣 ➡️ " + pets[level-1].split(" ")[0];
-                document.getElementById('trophySub').innerText = `ဉာဏ်ကြီးရှင် ဥလေး ကွဲသွားပြီး ${pets[level-1]} ရရှိလိုက်ပါပြီ!`;
-                document.getElementById('trophyModal').style.display = 'flex';
-                playMyanmarWishSound(`ဟာ... ဉာဏ်ကြီးရှင် ဥလေး ကွဲပြီး ${pets[level-1]} ရသွားပါပြီ!`);
+                // 🎁 Gift Box Logic (ကြယ် ၂၀ ပြည့်တိုင်း)
+                if (stars > 0 && stars % 20 === 0) {
+                    setTimeout(() => { document.getElementById('giftModal').style.display = 'flex'; }, 1000);
+                }
+                // 🎈 Balloon Game Logic (၁၀ ခေါက်မှန်တိုင်း)
+                if (correctInARow >= 10) {
+                    setTimeout(() => { startBalloonGame(); correctInARow = 0; }, 1200);
+                }
+            } else {
+                wrongCount += 1; correctInARow = 0;
+                let wrongAudio = (wrongCount >= 3) ? new Audio('double worng.mp3') : new Audio('worng.mp3');
+                wrongAudio.play();
+                showSpeech(`😭 ဖွေးဖွေးမှားနေပြီနော်`);
             }
         }
 
-        function openStickerBook() {
-            let grid = document.getElementById('stickerGrid');
-            grid.innerHTML = "";
-            stickerList.forEach(s => {
-                let div = document.createElement('div');
-                div.style.opacity = unlockedStickers.includes(s) ? "1" : "0.2";
-                div.innerText = s;
-                grid.appendChild(div);
-            });
-            document.getElementById('stickerModal').style.display = 'flex';
+        function startBalloonGame() {
+            document.getElementById('balloonModal').style.display = 'flex';
+            const area = document.getElementById('balloonArea');
+            area.innerHTML = '';
+            for(let i=0; i<15; i++) {
+                let b = document.createElement('div');
+                b.className = 'balloon';
+                b.style.background = '#' + Math.floor(Math.random()*16777215).toString(16);
+                b.style.left = Math.random() * 80 + 5 + 'vw';
+                b.style.animationDelay = Math.random() * 2 + 's';
+                b.innerText = '🎈';
+                b.onclick = function() { this.remove(); };
+                area.appendChild(b);
+            }
         }
 
+        function closeBalloonGame() { document.getElementById('balloonModal').style.display = 'none'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function setMode(m) { mode = m; document.getElementById('cardInner').classList.remove('flipped'); document.getElementById('cardContent').innerText = '?'; currentItem = null; stopListening(); }
         function showSpeech(text) { const speech = document.getElementById('speechBubble'); speech.innerText = text; speech.style.display = 'block'; }
-        function restartGame() { stopListening(); stars = 0; level = 1; wrongCount = 0; currentItem = null; unlockedStickers = []; document.getElementById('starCount').innerText = `⭐ 0`; document.getElementById('levelText').innerText = `🏆 Level: 1`; document.getElementById('cardInner').classList.remove('flipped'); document.getElementById('cardContent').innerText = '?'; document.getElementById('speechBubble').style.display = 'none'; document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="phway.jpg" alt="ဖွေးဖွေး">`; }
-    </script>
+        function setMode(m) { mode = m; stars = 0; document.getElementById('starCount').innerText = `⭐ 0`; }
+function restartGame() {
+    stopListening();
+    stars = 0;
+    level = 1;
+    wrongCount = 0;
+    correctInARow = 0;
+    currentItem = null;
+    unlockedStickers = [];
+    
+    // UI တွေကို ပြန်ပြင်ခြင်း
+    document.getElementById('starCount').innerText = `⭐ 0`;
+    document.getElementById('levelText').innerText = `🏆 Level: 1`;
+    document.getElementById('cardInner').classList.remove('flipped');
+    document.getElementById('cardContent').innerText = '?';
+    document.getElementById('speechBubble').style.display = 'none';
+    
+    // ပုံကို မူလအတိုင်း ပြန်ပြင်ခြင်း
+    document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="phway.jpg" alt="ဖွေးဖွေး">`;
+    
+    // Modal တွေ အကုန်ပိတ်ခြင်း
+    document.getElementById('giftModal').style.display = 'none';
+    document.getElementById('balloonModal').style.display = 'none';
+}
+   </script>
 </body>
 </html>
