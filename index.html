@@ -109,7 +109,6 @@
         .sticker-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; font-size: 35px; }
         .btn-close { background: #2ecc71; color: white; border: none; padding: 8px 20px; font-size: 16px; font-weight: bold; border-radius: 15px; cursor: pointer; }
 
-        /* --- ပူပေါင်း ဂိမ်းအတွက် Style --- */
         .balloon {
             position: absolute; width: 65px; height: 80px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -120,6 +119,11 @@
     </style>
 </head>
 <body>
+
+    <!-- Audio Elements (GitHub ထဲက ဖိုင်အမည်များအတိုင်း) -->
+    <audio id="sndCorrect" src="correct.mp3" preload="auto"></audio>
+    <audio id="sndWrong" src="worng.mp3" preload="auto"></audio>
+    <audio id="sndDoubleWrong" src="double worng.mp3" preload="auto"></audio>
 
     <!-- Gift Box Modal -->
     <div class="modal" id="giftModal">
@@ -218,46 +222,19 @@
 
         let mode = 'myanmar';
         let level = 1, stars = 0, currentItem = null, wrongCount = 0;
-        let accIndex = 0, unlockedStickers = [];
+        let accIndex = 0;
         let recognition = null, isListening = false;
         let correctInARow = 0;
-        let audioCtx = null;
 
-        // --- Sound Effects System ---
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-
-        function playSfx(type) {
-            initAudio(); if (!audioCtx) return;
-            let now = audioCtx.currentTime;
-
-            if (type === 'draw') {
-                let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
-                gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
-                osc.start(now); osc.stop(now + 0.1);
-
-            } else if (type === 'correct') {
-                const notes = [523.25, 659.25, 783.99, 1046.50];
-                notes.forEach((freq, idx) => {
-                    let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-                    gain.gain.setValueAtTime(0.3, now + idx * 0.08);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
-                    osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.start(now + idx * 0.08); osc.stop(now + idx * 0.08 + 0.3);
-                });
-
-            } else if (type === 'wrong') {
-                let osc1 = audioCtx.createOscillator(), osc2 = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc1.type = 'sawtooth'; osc2.type = 'sawtooth';
-                osc1.frequency.setValueAtTime(130, now); osc2.frequency.setValueAtTime(1385, now);
-                gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.45);
-                osc1.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination);
-                osc1.start(now); osc2.start(now); osc1.stop(now + 0.45); osc2.stop(now + 0.45);
-            }
+        // --- အသံဖွင့်သည့် စနစ် ---
+        function playAudio(id) {
+            try {
+                let audio = document.getElementById(id);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(e => console.log("Audio play blocked by browser"));
+                }
+            } catch(e) {}
         }
 
         function playMyanmarWishSound(text) {
@@ -298,12 +275,11 @@
 
         function toggleAcc() { accIndex = (accIndex + 1) % accessories.length; document.getElementById('accOverlay').innerText = accessories[accIndex]; }
 
-        // --- မဲနှိုက်သည့် Function (အသံနှင့် ပုံပြောင်းလဲခြင်း ပါဝင်သည်) ---
+        // --- မဲနှိုက်သည့် စနစ် ---
         function drawCard() {
             stopListening();
-            playSfx('draw'); // မဲနှိုက်သံ
 
-            // ပုံကို မူလပုံ (phway.jpg) သို့ ပြန်ပြောင်းခြင်း
+            // မူလပုံ (phway.jpg) ပြန်ပြောင်းရန်
             document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="phway.jpg" alt="ဖွေးဖွေး">`;
 
             const cardInner = document.getElementById('cardInner');
@@ -317,7 +293,7 @@
             }, 150);
         }
 
-        // --- အမှန်/အမှား စစ်ဆေးသည့် Function (ပုံပြောင်းလဲခြင်း ပါဝင်သည်) ---
+        // --- အမှန်/အမှား စစ်ဆေးသည့် စနစ် ---
         function assess(isCorrect) {
             stopListening();
             document.getElementById('speechBubble').style.display = 'none';
@@ -325,10 +301,12 @@
             if (isCorrect) {
                 wrongCount = 0; stars += 1; correctInARow += 1;
                 document.getElementById('starCount').innerText = `⭐ ${stars}`;
-                playSfx('correct'); // မှန်သည့်အသံ
+                
+                // correct.mp3 အသံဖွင့်မည်
+                playAudio('sndCorrect');
 
-                // မှန်သွားလျှင် ကပြသည့် / ပြုံးသည့်ပုံ သို့မဟုတ် Video ပြောင်းရန် (dance.mp4 သို့မဟုတ် phway_happy.jpg)
-                document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><video src="dance.mp4" autoplay loop muted></video>`;
+                // dance.mp4 ဗီဒီယို ပြောင်းပြမည်
+                document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><video src="dance.mp4" autoplay loop muted playsinline></video>`;
 
                 const phonics = currentItem ? currentItem.p : "";
                 showSpeech(`💃 ${phonics}! 🎉`);
@@ -341,10 +319,16 @@
                 }
             } else {
                 wrongCount += 1; correctInARow = 0;
-                playSfx('wrong'); // မှားသည့်အသံ
-
-                // မှားသွားလျှင် ငိုသည့်ပုံ ပြောင်းရန် (phway_sad.jpg)
-                document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="phway_sad.jpg" alt="ဖွေးဖွေးဝမ်းနည်း">`;
+                
+                if (wrongCount >= 2) {
+                    // ၂ ကြိမ်ဆက်မှားရင် double worng.mp3 နဲ့ worng2.jpg ပေါ်မည်
+                    playAudio('sndDoubleWrong');
+                    document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="worng2.jpg" alt="မှားသည်">`;
+                } else {
+                    // ၁ ကြိမ်မှားရင် worng.mp3 နဲ့ worng1.jpg ပေါ်မည်
+                    playAudio('sndWrong');
+                    document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="worng1.jpg" alt="မှားသည်">`;
+                }
 
                 showSpeech(`😭 ဖွေးဖွေးမှားနေပြီနော်`);
             }
@@ -389,7 +373,6 @@
             wrongCount = 0;
             correctInARow = 0;
             currentItem = null;
-            unlockedStickers = [];
             
             document.getElementById('starCount').innerText = `⭐ 0`;
             document.getElementById('levelText').innerText = `🏆 Level: 1`;
