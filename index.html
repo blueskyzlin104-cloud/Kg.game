@@ -268,11 +268,54 @@
 
         function toggleAcc() { accIndex = (accIndex + 1) % accessories.length; document.getElementById('accOverlay').innerText = accessories[accIndex]; }
 
-        // --- မဲနှိုက်သည့် စနစ် ---
+           // --- မဲနှိုက်သံ ထွက်စေရန် Web Audio Synth ---
+        function playPopSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } catch(e) {}
+        }
+
+        // --- မဲနှိုက်သည့် စနစ် (တုန်ခြင်း + မဲနှိုက်သံ ပါဝင်သည်) ---
         function drawCard() {
             stopListening();
 
+            // ၁။ ဖုန်းတုန်အောင်လုပ်ခြင်း (မိုဘိုင်းလ်တွင် 80ms တုန်မည်)
+            if (navigator.vibrate) {
+                navigator.vibrate(80);
+            }
+
+            // ၂။ မဲနှိုက်သံ (Pop Sound) အရင်မြည်ပေးခြင်း
+            playPopSound();
+
             // ပင်မပုံ (phway.jpg) သို့ ပြန်ပြောင်းမည်
+            document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="phway.jpg" alt="ဖွေးဖွေး">`;
+
+            const cardInner = document.getElementById('cardInner');
+            cardInner.classList.remove('flipped');
+            setTimeout(() => {
+                const pool = levelsData[mode][level] || levelsData[mode][1];
+                currentItem = pool[Math.floor(Math.random() * pool.length)];
+                document.getElementById('cardContent').innerText = currentItem.c;
+                cardInner.classList.add('flipped');
+                
+                // ကတ်လှန်ပြီးသည်နှင့် ဖွေးဖွေးအသံ လိုက်ထွက်မည်
+                speakCardContent();
+
+                setTimeout(() => { startListening(); }, 500);
+            }, 150);
+        }
+         // ပင်မပုံ (phway.jpg) သို့ ပြန်ပြောင်းမည်
             document.getElementById('mediaBox').innerHTML = `<div class="accessory-overlay" id="accOverlay">${accessories[accIndex]}</div><img src="phway.jpg" alt="ဖွေးဖွေး">`;
 
             const cardInner = document.getElementById('cardInner');
